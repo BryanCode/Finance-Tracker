@@ -1,4 +1,6 @@
 const CACHE_NAME = 'finance-tracker-v1';
+const NOTIFICATION_TIME = '18:00'; // Horário desejado (6 PM)
+
 const urlsToCache = [
   '/finance-tracker/',
   '/finance-tracker/index.html',
@@ -9,7 +11,67 @@ const urlsToCache = [
   'https://fonts.googleapis.com/css2?family=Georama:wght@300;400;600;700&display=swap'
 ];
 
-// Instalar Service Worker e fazer cache dos recursos
+// Função para calcular o tempo até a próxima notificação
+function getTimeUntilNotification() {
+  const now = new Date();
+  const [targetHour, targetMinute] = NOTIFICATION_TIME.split(':').map(Number);
+  
+  const targetTime = new Date();
+  targetTime.setHours(targetHour, targetMinute, 0, 0);
+  
+  // Se o horário já passou hoje, agenda para amanhã
+  if (now > targetTime) {
+    targetTime.setDate(targetTime.getDate() + 1);
+  }
+  
+  return targetTime.getTime() - now.getTime();
+}
+
+// Função para agendar notificação diária
+async function scheduleDailyNotification() {
+  const timeUntilNotification = getTimeUntilNotification();
+  
+  // Agenda a notificação
+  setTimeout(() => {
+    showScheduledNotification();
+    // Reagenda para o próximo dia
+    scheduleDailyNotification();
+  }, timeUntilNotification);
+}
+
+// Função para mostrar notificação agendada
+async function showScheduledNotification() {
+  const title = '💸 Controle de Finanças';
+  const options = {
+    body: 'Hora de atualizar seus gastos de hoje!',
+    icon: '/finance-tracker/icons/icon-192x192.png',
+    badge: '/finance-tracker/icons/icon-72x72.png',
+    vibrate: [200, 100, 200],
+    tag: 'daily-reminder',
+    requireInteraction: true,
+    data: {
+      dateOfArrival: Date.now(),
+      primaryKey: 2,
+      url: '/finance-tracker/'
+    },
+    actions: [
+      {
+        action: 'open',
+        title: 'Registrar Gastos',
+        icon: '/finance-tracker/icons/icon-72x72.png'
+      },
+      {
+        action: 'snooze',
+        title: 'Lembrar mais tarde',
+        icon: '/finance-tracker/icons/icon-72x72.png'
+      }
+    ]
+  };
+
+  await self.registration.showNotification(title, options);
+}
+
+// Instalar Service Worker e iniciar agendamento
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -21,26 +83,45 @@ self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
-// Ativar Service Worker e limpar caches antigos
+// Ativar Service Worker e iniciar agendamento de notificações
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Removendo cache antigo:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
+    Promise.all([
+      // Limpar caches antigos
+      caches.keys().then(cacheNames => {
+        return Promise.all(
+          cacheNames.map(cacheName => {
+            if (cacheName !== CACHE_NAME) {
+              console.log('Removendo cache antigo:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      }),
+      // Iniciar agendamento de notificações
+      self.registration.getNotifications().then(notifications => {
+        notifications.forEach(notification => notification.close());
+      })
+    ])
   );
+  
+  // Iniciar o agendamento de notificações
+  scheduleDailyNotification();
   self.clients.claim();
 });
 
-// Interceptar requisições e servir do cache quando possível
+// ⭐⭐ ADICIONE AQUI O LISTENER DE MENSAGENS ⭐⭐
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SET_NOTIFICATION_TIME') {
+    NOTIFICATION_TIME = event.data.time;
+    // Reiniciar o agendamento com novo horário
+    scheduleDailyNotification();
+  }
+});
+
+
+// Interceptar requisições (mantenha o código original)
 self.addEventListener('fetch', event => {
-  // Não fazer cache de requisições para o Firebase
   if (event.request.url.includes('firebaseio.com')) {
     return event.respondWith(fetch(event.request));
   }
@@ -48,37 +129,28 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        // Retorna do cache se encontrado
         if (response) {
           return response;
         }
-
-        // Caso contrário, busca da rede
         return fetch(event.request).then(response => {
-          // Verifica se recebeu uma resposta válida
           if (!response || response.status !== 200 || response.type !== 'basic') {
             return response;
           }
-
-          // Clona a resposta
           const responseToCache = response.clone();
-
           caches.open(CACHE_NAME)
             .then(cache => {
               cache.put(event.request, responseToCache);
             });
-
           return response;
         });
       })
       .catch(() => {
-        // Retorna uma página offline personalizada se necessário
         return caches.match('/finance-tracker/index.html');
       })
   );
 });
 
-// Listener para notificações push
+// Listener para notificações push (mantenha o original)
 self.addEventListener('push', event => {
   const data = event.data ? event.data.json() : {};
   
@@ -114,7 +186,7 @@ self.addEventListener('push', event => {
   );
 });
 
-// Listener para cliques em notificações
+// Listener para cliques em notificações (atualizado)
 self.addEventListener('notificationclick', event => {
   event.notification.close();
 
@@ -122,10 +194,23 @@ self.addEventListener('notificationclick', event => {
     event.waitUntil(
       clients.openWindow(event.notification.data.url)
     );
+  } else if (event.action === 'snooze') {
+    // Reagendar notificação para 1 hora depois
+    event.waitUntil(
+      new Promise(resolve => {
+        setTimeout(() => {
+          showScheduledNotification();
+          resolve();
+        }, 60 * 60 * 1000); // 1 hora
+      })
+    );
+  } else if (event.action === 'close') {
+    // Simplesmente fecha a notificação
+    console.log('Notificação fechada');
   }
 });
 
-// Sincronização periódica em background (quando o app está fechado)
+// Sincronização periódica em background
 self.addEventListener('periodicsync', event => {
   if (event.tag === 'sync-finances') {
     event.waitUntil(syncFinancesData());
@@ -133,12 +218,10 @@ self.addEventListener('periodicsync', event => {
 });
 
 async function syncFinancesData() {
-  // Buscar dados atualizados do Firebase
   try {
     const response = await fetch('https://teste-geocode-7f072-default-rtdb.firebaseio.com/assets.json');
     const data = await response.json();
     
-    // Enviar notificação se houver mudanças
     if (data) {
       await self.registration.showNotification('Dados Atualizados', {
         body: 'Seus dados financeiros foram sincronizados',

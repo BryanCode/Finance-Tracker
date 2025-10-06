@@ -1126,5 +1126,46 @@
 
         init();
     </script>
+    <script>
+// Solicitar permissão para notificações
+async function requestNotificationPermission() {
+  if ('Notification' in window && 'serviceWorker' in navigator) {
+    const permission = await Notification.requestPermission();
+    
+    if (permission === 'granted') {
+      console.log('Permissão para notificações concedida');
+      
+      // Registrar periodic sync para notificações diárias
+      if ('periodicSync' in registration) {
+        try {
+          await registration.periodicSync.register('daily-reminder', {
+            minInterval: 24 * 60 * 60 * 1000 // 24 horas
+          });
+        } catch (error) {
+          console.log('Periodic Sync não suportado:', error);
+        }
+      }
+    }
+  }
+}
+
+// Iniciar quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+  // Solicitar permissão após um breve delay
+  setTimeout(requestNotificationPermission, 2000);
+});
+
+// Função para usuário configurar horário personalizado
+function setCustomNotificationTime(hour, minute) {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(registration => {
+      registration.active.postMessage({
+        type: 'SET_NOTIFICATION_TIME',
+        time: `${hour}:${minute}`
+      });
+    });
+  }
+}
+</script>
 </body>
 </html>
