@@ -1,13 +1,13 @@
 {
-"name": "Controle de Finanças",
+"name": "Finance Tracker",
   "short_name": "Finance Tracker",
   "description": "Aplicativo de controle de finanças pessoais com gestão de ativos",
   "start_url": "/finance-tracker/",
   "scope": "https://bryancode.github.io/finance-tracker/",
   "display": "fullscreen",
   "orientation": "portrait",
-  "theme_color": "#50547e",
-  "background_color": "#9193c1",
+  "theme_color": "#262A4C",
+  "background_color": "#262A4C",
   "icons":  [
     {
       "src": "windows11/SmallTile.scale-100.png",
