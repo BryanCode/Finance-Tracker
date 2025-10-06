@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Finanças</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Georama:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color1: #b1b2e2;
+            --color2: #9193c1;
+            --color3: #71749f;
+            --color4: #50547e;
+            --color5: #30355c;
+
+            --color1rgba: #b1b2e289;
+            --color2rgba: #9193c176;
+            --color3rgba: #71749f;
+            --color4rgba: #50547e;
+            --color5rgba: #30355c;
+            
+            --bg-primary: linear-gradient(135deg, var(--color2) 0%, var(--color4) 100%);
+            --bg-card: #ffffff;
+            --text-primary: var(--color5);
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: linear-gradient(135deg, var(--color5) 0%, #1a1d3a 100%);
+            --bg-card: #2a2d4a;
+            --text-primary: #ffffff;
+            --text-secondary: var(--color1);
+            --border-color: var(--color4);
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            background: var(--bg-primary);
+            min-height: 100vh;
+            font-family: 'Georama', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding-bottom: 80px;
+            color: var(--text-primary);
+        }
+
+        .container {
+            max-width: 480px;
+            padding: 15px;
+        }
+
+        .fab-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 12px;
+            z-index: 1000;
+        }
+
+        .fab, .theme-toggle-fab {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+
+        .fab {
+            background: linear-gradient(135deg, var(--color3) 0%, var(--color4) 100%);
+            color: white;
+        }
+
+        .theme-toggle-fab {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            color: var(--color3);
+            font-size: 22px;
+        }
+
+        .fab:active, .theme-toggle-fab:active {
+            transform: scale(0.9);
+        }
+
+        .header {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px var(--shadow);
+            margin-top: 20px;
+        }
+
+        .dashboard-top {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            align-items: center;
+            padding-bottom: 25px;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 25px;
+        }
+
+        .total-section {
+            text-align: left;
+        }
+
+        .total-label {
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+
+        .total-value {
+            color: var(--text-primary);
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -1px;
+        }
+
+        .assets-badge {
+            background: linear-gradient(135deg, var(--color1rgba) 0%, var(--color2rgba) 100%);
+            color: var(--color5);
+            border-radius: 20px;
+            padding: 10px 5px;
+            text-align: center;
+            min-width: 70px;
+        }
+
+        [data-theme="dark"] .assets-badge {
+            color: #ffffff;
+        }
+
+        .assets-badge .label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .assets-badge .value {
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .distribution-section {
+            margin-bottom: 25px;
+        }
+
+        .distribution-title {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .distribution-bar {
+            width: 100%;
+            height: 20px;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            background: var(--border-color);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .distribution-segment {
+            height: 100%;
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            min-width: 30px;
+        }
+
+        .distribution-segment:hover {
+            filter: brightness(1.1);
+        }
+
+        .distribution-legend {
+            display: block;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .legend-name {
+            color: var(--text-primary);
+            font-weight: 600;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .legend-percent {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .favorites-section {
+            border-top: 2px solid var(--border-color);
+            padding-top: 20px;
+        }
+
+        .favorites-title {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .favorite-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 18px;
+            background: linear-gradient(135deg, var(--color1) 0%, var(--color1) 100%);
+            border-radius: 16px;
+            margin-bottom: 10px;
+        }
+
+        [data-theme="dark"] .favorite-item {
+            background: linear-gradient(135deg, var(--color4) 0%, var(--color4) 100%);
+        }
+
+        .favorite-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color5);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        [data-theme="dark"] .favorite-name {
+            color: var(--color1);
+        }
+
+        .favorite-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--color5);
+        }
+
+        [data-theme="dark"] .favorite-value {
+            color: #ffffff;
+        }
+
+        .empty-favorites, .empty-distribution {
+            text-align: center;
+            padding: 25px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        .asset-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px var(--shadow);
+            transition: transform 0.2s;
+            position: relative;
+            border: 2px solid transparent;
+            border-left: 6px solid;
+        }
+
+        .asset-card:hover {
+            border-color: var(--color2);
+            border-left-color: var(--asset-color);
+        }
+
+        .asset-card.dragging {
+            opacity: 0.5;
+        }
+
+        .asset-card:active {
+            transform: scale(0.98);
+        }
+
+        .drag-handle {
+            position: absolute;
+            left: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: transparent;
+            cursor: grab;
+            font-size: 18px;
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+
+        .asset-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .asset-name {
+            font-weight: 600;
+            font-size: 17px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .favorite-star {
+            color: #fbbf24;
+            cursor: pointer;
+            font-size: 20px;
+            transition: transform 0.2s;
+        }
+
+        .favorite-star:hover {
+            transform: scale(1.2);
+        }
+
+        .favorite-star.inactive {
+            color: var(--border-color);
+        }
+
+        .asset-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color3);
+        }
+
+        [data-theme="dark"] .asset-value {
+            color: var(--color1);
+        }
+
+        .asset-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .asset-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Georama', sans-serif;
+        }
+
+        .btn-add {
+            background: #d1fae5;
+            color: #047857;
+        }
+
+        .btn-remove {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .btn-delete {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            flex: 0.5;
+        }
+
+        .btn-action:active {
+            transform: scale(0.95);
+        }
+
+        .modal-content {
+            border-radius: 24px;
+            border: none;
+            background: var(--bg-card);
+        }
+
+        .modal-header {
+            border: none;
+            padding: 30px 30px 10px;
+        }
+
+        .modal-title {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .modal-body {
+            padding: 10px 30px 30px;
+        }
+
+        .form-label {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 14px;
+            border: 2px solid var(--border-color);
+            padding: 14px;
+            font-size: 15px;
+            font-family: 'Georama', sans-serif;
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--color3);
+            box-shadow: 0 0 0 3px rgba(113, 116, 159, 0.2);
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .color-picker-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .color-option {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 12px;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.selected {
+            border-color: var(--text-primary);
+            box-shadow: 0 0 0 2px var(--bg-card), 0 0 0 4px var(--text-primary);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color3) 0%, var(--color4) 100%);
+            border: none;
+            border-radius: 14px;
+            padding: 14px;
+            font-weight: 600;
+            width: 100%;
+            font-family: 'Georama', sans-serif;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--color4) 0%, var(--color5) 100%);
+        }
+
+        .btn-close {
+            filter: var(--text-primary);
+        }
+
+        [data-theme="dark"] .btn-close {
+            filter: invert(1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+        }
+
+        .empty-state i {
+            font-size: 72px;
+            margin-bottom: 20px;
+            opacity: 0.6;
+        }
+
+        .empty-state h5 {
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            opacity: 0.85;
+        }
+
+        .section-title {
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            margin: 30px 0 20px;
+            padding: 0 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+        }
+
+        .loading-spinner {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 10px 40px var(--shadow);
+        }
+
+        .spinner-border {
+            color: var(--color3);
+        }
+
+        .loading-spinner div:last-child {
+            margin-top: 15px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="dashboard-top">
+                <div class="total-section">
+                    <div class="total-label">Total</div>
+                    <div class="total-value" id="totalBalance">R$ 0,00</div>
+                </div>
+                <div class="assets-badge">
+                    <div class="label">Ativos</div>
+                    <div class="value" id="totalAssets">0</div>
+                </div>
+            </div>
+
+            <div class="distribution-section">
+                <div class="distribution-title">Distribuição de Ativos</div>
+                <div class="distribution-bar" id="distributionBar"></div>
+                <div class="distribution-legend" id="distributionLegend"></div>
+            </div>
+
+            <div class="favorites-section">
+                
+                <div id="favoritesList"></div>
+            </div>
+        </div>
+
+        <div class="section-title">Meus Ativos</div>
+        <div id="assetsList"></div>
+    </div>
+
+    <div class="fab-container">
+        <button class="theme-toggle-fab" onclick="toggleTheme()">
+            <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+        <button class="fab" onclick="showAddAssetModal()">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner-border" role="status"></div>
+            <div>Sincronizando...</div>
+        </div>
+    </div>
+
+    <!-- Modal Adicionar Ativo -->
+    <div class="modal fade" id="addAssetModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Novo Ativo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="assetForm">
+                        <div class="mb-3">
+                            <label class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="assetName" required placeholder="Ex: Cartão de Crédito">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Valor Inicial</label>
+                            <input type="number" step="0.01" class="form-control" id="assetValue" required placeholder="0.00">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cor do Ativo</label>
+                            <div class="color-picker-grid" id="colorPicker"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Descrição</label>
+                            <textarea class="form-control" id="assetDesc" rows="2" placeholder="Informações adicionais (opcional)"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Adicionar Ativo</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Transação -->
+    <div class="modal fade" id="transactionModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="transactionTitle">Transação</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="transactionForm">
+                        <input type="hidden" id="transactionAssetId">
+                        <input type="hidden" id="transactionType">
+                        <div class="mb-3">
+                            <label class="form-label">Valor</label>
+                            <input type="number" step="0.01" class="form-control" id="transactionValue" required placeholder="0.00">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Confirmar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const FIREBASE_URL = 'https://teste-geocode-7f072-default-rtdb.firebaseio.com';
+        let assets = [];
+        let transactions = [];
+        let favorites = [];
+        let selectedColor = '#4f46e5';
+
+        const COLORS = [
+            '#ef4444', '#f59e0b', '#10b981', '#3b82f6', 
+            '#8b5cf6', '#ec4899', '#14b8a6', '#f97316',
+            '#6366f1', '#84cc16', '#06b6d4', '#a855f7',
+            '#22c55e', '#eab308', '#0ea5e9', '#d946ef',
+            '#64748b', '#78716c'
+        ];
+
+        function initColorPicker() {
+            const picker = document.getElementById('colorPicker');
+            picker.innerHTML = COLORS.map(color => `
+                <div class="color-option ${color === selectedColor ? 'selected' : ''}" 
+                     style="background-color: ${color}"
+                     onclick="selectColor('${color}')"></div>
+            `).join('');
+        }
+
+        function selectColor(color) {
+            selectedColor = color;
+            document.querySelectorAll('.color-option').forEach(el => {
+                el.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            const icon = document.getElementById('themeIcon');
+            
+            html.setAttribute('data-theme', newTheme);
+            icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            localStorage.setItem('theme', newTheme);
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const icon = document.getElementById('themeIcon');
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        async function loadData() {
+            try {
+                showLoading();
+                
+                const assetsResponse = await fetch(`${FIREBASE_URL}/assets.json`);
+                const transactionsResponse = await fetch(`${FIREBASE_URL}/transactions.json`);
+                const favoritesResponse = await fetch(`${FIREBASE_URL}/favorites.json`);
+                
+                const assetsData = await assetsResponse.json();
+                const transactionsData = await transactionsResponse.json();
+                const favoritesData = await favoritesResponse.json();
+                
+                assets = assetsData ? Object.values(assetsData) : [];
+                transactions = transactionsData ? Object.values(transactionsData) : [];
+                favorites = favoritesData || [];
+                
+                hideLoading();
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                hideLoading();
+                alert('Erro ao carregar dados do servidor');
+            }
+        }
+
+        async function saveData() {
+            try {
+                showLoading();
+                
+                const assetsObj = {};
+                assets.forEach(asset => {
+                    assetsObj[asset.id] = asset;
+                });
+                
+                const transactionsObj = {};
+                transactions.forEach(transaction => {
+                    transactionsObj[transaction.id] = transaction;
+                });
+                
+                await Promise.all([
+                    fetch(`${FIREBASE_URL}/assets.json`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(assetsObj)
+                    }),
+                    fetch(`${FIREBASE_URL}/transactions.json`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(transactionsObj)
+                    }),
+                    fetch(`${FIREBASE_URL}/favorites.json`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(favorites)
+                    })
+                ]);
+                
+                hideLoading();
+            } catch (error) {
+                console.error('Erro ao salvar dados:', error);
+                hideLoading();
+                alert('Erro ao salvar dados no servidor');
+            }
+        }
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value);
+        }
+
+        function calculateStats() {
+            const totalBalance = assets.reduce((sum, asset) => sum + asset.value, 0);
+
+            document.getElementById('totalBalance').textContent = formatCurrency(totalBalance);
+            document.getElementById('totalAssets').textContent = assets.length;
+        }
+
+        function renderDistribution() {
+            const barContainer = document.getElementById('distributionBar');
+            const legendContainer = document.getElementById('distributionLegend');
+            
+            if (assets.length === 0) {
+                legendContainer.innerHTML = '';
+                return;
+            }
+
+            const totalValue = assets.reduce((sum, asset) => sum + asset.value, 0);
+            
+            if (totalValue === 0) {
+                barContainer.innerHTML = '<div class="empty-distribution">Ativos sem valor</div>';
+                legendContainer.innerHTML = '';
+                return;
+            }
+
+            const assetsWithPercentage = assets.map(asset => ({
+                ...asset,
+                percentage: (asset.value / totalValue) * 100
+            })).sort((a, b) => b.percentage - a.percentage);
+
+            barContainer.innerHTML = assetsWithPercentage.map(asset => `
+                <div class="distribution-segment" 
+                     style="width: ${asset.percentage}%; background-color: ${asset.color || '#4f46e5'}"
+                     title="${asset.name}: ${asset.percentage.toFixed(1)}%">
+                    ${asset.percentage > 10 ? `${asset.percentage.toFixed(0)}%` : ''}
+                </div>
+            `).join('');
+
+            legendContainer.innerHTML = assetsWithPercentage.map(asset => `
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: ${asset.color || '#4f46e5'}"></div>
+                    <div class="legend-name" title="${asset.name}">${asset.name}</div>
+                    <div class="legend-percent">${asset.percentage.toFixed(1)}%</div>
+                </div>
+            `).join('');
+        }
+
+        function toggleFavorite(assetId) {
+            const index = favorites.indexOf(assetId);
+            
+            if (index > -1) {
+                favorites.splice(index, 1);
+            } else {
+                if (favorites.length >= 3) {
+                    alert('Você pode ter no máximo 3 ativos favoritos!');
+                    return;
+                }
+                favorites.push(assetId);
+            }
+            
+            saveData();
+            renderAssets();
+            renderFavorites();
+        }
+
+        function renderFavorites() {
+            const container = document.getElementById('favoritesList');
+            
+            if (favorites.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-favorites">
+                        Clique na estrela dos ativos para marcá-los como favoritos
+                    </div>
+                `;
+                return;
+            }
+
+            const favoriteAssets = favorites
+                .map(id => assets.find(a => a.id === id))
+                .filter(a => a !== undefined);
+
+            container.innerHTML = favoriteAssets.map(asset => `
+                <div class="favorite-item">
+                    <div class="favorite-name">
+                        <i class="fas fa-star" style="color: #fbbf24;"></i>
+                        ${asset.name}
+                    </div>
+                    <div class="favorite-value">${formatCurrency(asset.value)}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderAssets() {
+            const container = document.getElementById('assetsList');
+            
+            if (assets.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-wallet"></i>
+                        <h5>Nenhum ativo cadastrado</h5>
+                        <p>Clique no botão + para adicionar seu primeiro ativo</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = assets.map((asset, index) => `
+                <div class="asset-card" draggable="true" data-index="${index}" data-id="${asset.id}" style="--asset-color: ${asset.color || '#4f46e5'}; border-left-color: ${asset.color || '#4f46e5'}">
+                    <div class="drag-handle">
+                        <i class="fas fa-grip-vertical"></i>
+                    </div>
+                    <div class="asset-header">
+                        <div class="asset-name">
+                            <i class="fas fa-star favorite-star ${favorites.includes(asset.id) ? '' : 'inactive'}" 
+                               onclick="toggleFavorite('${asset.id}')"></i>
+                            ${asset.name}
+                        </div>
+                        <div class="asset-value">${formatCurrency(asset.value)}</div>
+                    </div>
+                    ${asset.description ? `<div class="asset-desc">${asset.description}</div>` : ''}
+                    <div class="asset-actions">
+                        <button class="btn-action btn-add" onclick="showTransactionModal('${asset.id}', 'add')">
+                            <i class="fas fa-plus"></i> Adicionar
+                        </button>
+                        <button class="btn-action btn-remove" onclick="showTransactionModal('${asset.id}', 'remove')">
+                            <i class="fas fa-minus"></i> Remover
+                        </button>
+                        <button class="btn-action btn-delete" onclick="deleteAsset('${asset.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            setupDragAndDrop();
+        }
+
+        function setupDragAndDrop() {
+            const cards = document.querySelectorAll('.asset-card');
+            let draggedElement = null;
+            let draggedIndex = null;
+
+            cards.forEach(card => {
+                card.addEventListener('dragstart', (e) => {
+                    draggedElement = card;
+                    draggedIndex = parseInt(card.dataset.index);
+                    card.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+
+                card.addEventListener('dragend', (e) => {
+                    card.classList.remove('dragging');
+                });
+
+                card.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    
+                    const afterElement = getDragAfterElement(e.clientY);
+                    const container = document.getElementById('assetsList');
+                    
+                    if (afterElement == null) {
+                        container.appendChild(draggedElement);
+                    } else {
+                        container.insertBefore(draggedElement, afterElement);
+                    }
+                });
+
+                card.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const targetIndex = parseInt(card.dataset.index);
+                    
+                    if (draggedIndex !== targetIndex) {
+                        const [removed] = assets.splice(draggedIndex, 1);
+                        const newIndex = draggedIndex < targetIndex ? targetIndex - 1 : targetIndex;
+                        assets.splice(newIndex, 0, removed);
+                        
+                        saveData();
+                        renderAssets();
+                        renderDistribution();
+                    }
+                });
+            });
+        }
+
+        function getDragAfterElement(y) {
+            const cards = [...document.querySelectorAll('.asset-card:not(.dragging)')];
+            
+            return cards.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        function showAddAssetModal() {
+            const modal = new bootstrap.Modal(document.getElementById('addAssetModal'));
+            document.getElementById('assetForm').reset();
+            selectedColor = COLORS[0];
+            initColorPicker();
+            modal.show();
+        }
+
+        function showTransactionModal(assetId, type) {
+            const asset = assets.find(a => a.id === assetId);
+            const modal = new bootstrap.Modal(document.getElementById('transactionModal'));
+            
+            document.getElementById('transactionAssetId').value = assetId;
+            document.getElementById('transactionType').value = type;
+            document.getElementById('transactionTitle').textContent = 
+                type === 'add' ? `Adicionar valor - ${asset.name}` : `Remover valor - ${asset.name}`;
+            document.getElementById('transactionForm').reset();
+            
+            modal.show();
+        }
+
+        document.getElementById('assetForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const asset = {
+                id: Date.now().toString(),
+                name: document.getElementById('assetName').value,
+                value: parseFloat(document.getElementById('assetValue').value),
+                color: selectedColor,
+                description: document.getElementById('assetDesc').value
+            };
+
+            assets.push(asset);
+            await saveData();
+            renderAssets();
+            renderFavorites();
+            renderDistribution();
+            calculateStats();
+            
+            bootstrap.Modal.getInstance(document.getElementById('addAssetModal')).hide();
+        });
+
+        document.getElementById('transactionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const assetId = document.getElementById('transactionAssetId').value;
+            const type = document.getElementById('transactionType').value;
+            const value = parseFloat(document.getElementById('transactionValue').value);
+            
+            const asset = assets.find(a => a.id === assetId);
+            
+            if (type === 'add') {
+                asset.value += value;
+            } else {
+                asset.value -= value;
+            }
+
+            transactions.push({
+                id: Date.now().toString(),
+                assetId,
+                type,
+                value,
+                date: new Date().toISOString()
+            });
+
+            await saveData();
+            renderAssets();
+            renderFavorites();
+            renderDistribution();
+            calculateStats();
+            
+            bootstrap.Modal.getInstance(document.getElementById('transactionModal')).hide();
+        });
+
+        async function deleteAsset(assetId) {
+            if (confirm('Tem certeza que deseja excluir este ativo?')) {
+                assets = assets.filter(a => a.id !== assetId);
+                transactions = transactions.filter(t => t.assetId !== assetId);
+                favorites = favorites.filter(id => id !== assetId);
+                await saveData();
+                renderAssets();
+                renderFavorites();
+                renderDistribution();
+                calculateStats();
+            }
+        }
+
+        async function init() {
+            loadTheme();
+            await loadData();
+            renderAssets();
+            renderFavorites();
+            renderDistribution();
+            calculateStats();
+        }
+
+        init();
+    </script>
+</body>
+</html>
