@@ -4,7 +4,7 @@
   "description": "Aplicativo de controle de finanças pessoais com gestão de ativos",
   "start_url": "/finance-tracker/",
   "scope": "https://bryancode.github.io/finance-tracker/",
-  "display": "fullscreen",
+  "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#262A4C",
   "background_color": "#262A4C",
