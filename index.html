@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Aplicativo de controle de finanças pessoais com gestão de ativos">
     <meta name="theme-color" content="#50547e">
@@ -16,7 +16,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Georama:wght@300;400;600;700&display=swap" rel="stylesheet">  <style>
+    <link href="https://fonts.googleapis.com/css2?family=Georama:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
         :root {
             --color1: #b1b2e2;
             --color2: #9193c1;
@@ -596,7 +597,7 @@
         <div class="header">
             <div class="dashboard-top">
                 <div class="total-section">
-                    <div class="total-label">Total</div>
+                    <div class="total-label">Patrimônio Total</div>
                     <div class="total-value" id="totalBalance">R$ 0,00</div>
                 </div>
                 <div class="assets-badge">
@@ -612,7 +613,10 @@
             </div>
 
             <div class="favorites-section">
-                
+                <div class="favorites-title">
+                    <i class="fas fa-star"></i>
+                    Favoritos
+                </div>
                 <div id="favoritesList"></div>
             </div>
         </div>
@@ -835,6 +839,7 @@
             const legendContainer = document.getElementById('distributionLegend');
             
             if (assets.length === 0) {
+                barContainer.innerHTML = '<div class="empty-distribution">Adicione ativos para ver a distribuição</div>';
                 legendContainer.innerHTML = '';
                 return;
             }
