@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Aplicativo de controle de finanças pessoais com gestão de ativos">
     <meta name="theme-color" content="#50547e">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
-
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Finanças">
     <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32x32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <title>Controle de Finanças</title>
@@ -21,7 +20,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Georama:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
+     <style>
         :root {
             --color1: #b1b2e2;
             --color2: #9193c1;
@@ -645,6 +644,27 @@
         </div>
     </div>
 
+    <!-- Install PWA Prompt -->
+    <div id="installPrompt" class="d-none install-prompt">
+        <div class="install-prompt-content">
+            <div class="install-prompt-icon">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <div class="install-prompt-text">
+                <h5>Instalar Aplicativo</h5>
+                <p>Adicione à tela inicial para acesso rápido</p>
+            </div>
+        </div>
+        <div class="install-prompt-buttons">
+            <button class="install-btn" onclick="installPWA()">
+                <i class="fas fa-download"></i> Instalar
+            </button>
+            <button class="install-dismiss-btn" onclick="dismissInstallPrompt()">
+                Agora não
+            </button>
+        </div>
+    </div>
+
     <!-- Modal Adicionar Ativo -->
     <div class="modal fade" id="addAssetModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -708,6 +728,8 @@
         let transactions = [];
         let favorites = [];
         let selectedColor = '#4f46e5';
+        let deferredPrompt = null;
+        let notificationInterval = null;
 
         const COLORS = [
             '#ef4444', '#f59e0b', '#10b981', '#3b82f6', 
@@ -716,6 +738,75 @@
             '#22c55e', '#eab308', '#0ea5e9', '#d946ef',
             '#64748b', '#78716c'
         ];
+
+        // PWA Install Prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Verificar se o usuário já dispensou o prompt antes
+            const dismissed = localStorage.getItem('pwa-install-dismissed');
+            const installed = localStorage.getItem('pwa-installed');
+            
+            if (!dismissed && !installed) {
+                // Mostrar o prompt após 3 segundos
+                setTimeout(() => {
+                    showInstallPrompt();
+                }, 3000);
+            }
+        });
+
+        // Detectar quando o PWA for instalado
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA instalado com sucesso!');
+            localStorage.setItem('pwa-installed', 'true');
+            hideInstallPrompt();
+            deferredPrompt = null;
+        });
+
+        function showInstallPrompt() {
+            const prompt = document.getElementById('installPrompt');
+            if (prompt && deferredPrompt) {
+                prompt.style.display = 'block';
+            }
+        }
+
+        function hideInstallPrompt() {
+            const prompt = document.getElementById('installPrompt');
+            if (prompt) {
+                prompt.style.display = 'none';
+            }
+        }
+
+        async function installPWA() {
+            if (!deferredPrompt) {
+                return;
+            }
+
+            deferredPrompt.prompt();
+            
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                console.log('Usuário aceitou instalar o PWA');
+                localStorage.setItem('pwa-installed', 'true');
+            } else {
+                console.log('Usuário recusou instalar o PWA');
+            }
+            
+            hideInstallPrompt();
+            deferredPrompt = null;
+        }
+
+        function dismissInstallPrompt() {
+            hideInstallPrompt();
+            localStorage.setItem('pwa-install-dismissed', 'true');
+            
+            // Perguntar novamente em 7 dias
+            setTimeout(() => {
+                localStorage.removeItem('pwa-install-dismissed');
+            }, 7 * 24 * 60 * 60 * 1000);
+        }
 
         function initColorPicker() {
             const picker = document.getElementById('colorPicker');
@@ -1128,6 +1219,19 @@
         }
 
         init();
+
+        // Registrar Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/finance-tracker/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado com sucesso:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Falha ao registrar Service Worker:', error);
+                    });
+            });
+        }
     </script>
 </body>
 </html>

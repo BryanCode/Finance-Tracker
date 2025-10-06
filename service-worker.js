@@ -77,3 +77,77 @@ self.addEventListener('fetch', event => {
       })
   );
 });
+
+// Listener para notificações push
+self.addEventListener('push', event => {
+  const data = event.data ? event.data.json() : {};
+  
+  const title = data.title || 'Controle de Finanças';
+  const options = {
+    body: data.body || 'Atualize seus dados financeiros',
+    icon: '/finance-tracker/icons/icon-192x192.png',
+    badge: '/finance-tracker/icons/icon-72x72.png',
+    vibrate: [200, 100, 200],
+    tag: 'finance-update',
+    requireInteraction: false,
+    data: {
+      dateOfArrival: Date.now(),
+      primaryKey: 1,
+      url: data.url || '/finance-tracker/'
+    },
+    actions: [
+      {
+        action: 'open',
+        title: 'Abrir App',
+        icon: '/finance-tracker/icons/icon-72x72.png'
+      },
+      {
+        action: 'close',
+        title: 'Fechar',
+        icon: '/finance-tracker/icons/icon-72x72.png'
+      }
+    ]
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+  );
+});
+
+// Listener para cliques em notificações
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+
+  if (event.action === 'open' || !event.action) {
+    event.waitUntil(
+      clients.openWindow(event.notification.data.url)
+    );
+  }
+});
+
+// Sincronização periódica em background (quando o app está fechado)
+self.addEventListener('periodicsync', event => {
+  if (event.tag === 'sync-finances') {
+    event.waitUntil(syncFinancesData());
+  }
+});
+
+async function syncFinancesData() {
+  // Buscar dados atualizados do Firebase
+  try {
+    const response = await fetch('https://teste-geocode-7f072-default-rtdb.firebaseio.com/assets.json');
+    const data = await response.json();
+    
+    // Enviar notificação se houver mudanças
+    if (data) {
+      await self.registration.showNotification('Dados Atualizados', {
+        body: 'Seus dados financeiros foram sincronizados',
+        icon: '/finance-tracker/icons/icon-192x192.png',
+        badge: '/finance-tracker/icons/icon-72x72.png',
+        tag: 'finance-sync'
+      });
+    }
+  } catch (error) {
+    console.error('Erro ao sincronizar dados:', error);
+  }
+}
