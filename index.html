@@ -5,16 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Aplicativo de controle de finanças pessoais com gestão de ativos">
     <meta name="theme-color" content="#50547e">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
-
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Finanças">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <title>Controle de Finanças</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -31,9 +21,6 @@
 
             --color1rgba: #b1b2e289;
             --color2rgba: #9193c176;
-            --color3rgba: #71749f;
-            --color4rgba: #50547e;
-            --color5rgba: #30355c;
             
             --bg-primary: linear-gradient(135deg, var(--color2) 0%, var(--color4) 100%);
             --bg-card: #ffffff;
@@ -44,12 +31,12 @@
         }
 
         [data-theme="dark"] {
-            --bg-primary: linear-gradient(135deg, var(--color5) 0%, #1a1d3a 100%);
-            --bg-card: #2a2d4a;
+            --bg-primary: linear-gradient(135deg, #0f0f1a 0%, #050510 100%);
+            --bg-card: #1a1a2e;
             --text-primary: #ffffff;
-            --text-secondary: var(--color1);
-            --border-color: var(--color4);
-            --shadow: rgba(0, 0, 0, 0.3);
+            --text-secondary: #b1b2e2;
+            --border-color: #2a2a40;
+            --shadow: rgba(0, 0, 0, 0.5);
         }
 
         * {
@@ -97,11 +84,20 @@
             color: white;
         }
 
+        .fab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px var(--shadow);
+        }
+
         .theme-toggle-fab {
             background: var(--bg-card);
             border: 2px solid var(--border-color);
             color: var(--color3);
             font-size: 22px;
+        }
+
+        [data-theme="dark"] .theme-toggle-fab {
+            color: var(--color1);
         }
 
         .fab:active, .theme-toggle-fab:active {
@@ -115,6 +111,7 @@
             margin-bottom: 20px;
             box-shadow: 0 10px 30px var(--shadow);
             margin-top: 20px;
+            border: 1px solid var(--border-color);
         }
 
         .dashboard-top {
@@ -159,6 +156,7 @@
 
         [data-theme="dark"] .assets-badge {
             color: #ffffff;
+            background: linear-gradient(135deg, rgba(80, 84, 126, 0.3) 0%, rgba(48, 53, 92, 0.3) 100%);
         }
 
         .assets-badge .label {
@@ -279,7 +277,8 @@
         }
 
         [data-theme="dark"] .favorite-item {
-            background: linear-gradient(135deg, var(--color4) 0%, var(--color4) 100%);
+            background: linear-gradient(135deg, rgba(80, 84, 126, 0.2) 0%, rgba(48, 53, 92, 0.2) 100%);
+            border: 1px solid var(--border-color);
         }
 
         .favorite-name {
@@ -325,9 +324,15 @@
             border-left: 6px solid;
         }
 
+        [data-theme="dark"] .asset-card {
+            border: 1px solid var(--border-color);
+            border-left: 6px solid;
+        }
+
         .asset-card:hover {
             border-color: var(--color2);
             border-left-color: var(--asset-color);
+            transform: translateY(-2px);
         }
 
         .asset-card.dragging {
@@ -427,15 +432,37 @@
             color: #047857;
         }
 
+        .btn-add:hover {
+            background: #a7f3d0;
+        }
+
         .btn-remove {
             background: #fee2e2;
             color: #dc2626;
+        }
+
+        .btn-remove:hover {
+            background: #fecaca;
+        }
+
+        .btn-edit {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .btn-edit:hover {
+            background: #bfdbfe;
         }
 
         .btn-delete {
             background: var(--border-color);
             color: var(--text-secondary);
             flex: 0.5;
+        }
+
+        .btn-delete:hover {
+            background: #fecaca;
+            color: #dc2626;
         }
 
         .btn-action:active {
@@ -446,6 +473,10 @@
             border-radius: 24px;
             border: none;
             background: var(--bg-card);
+        }
+
+        [data-theme="dark"] .modal-content {
+            border: 1px solid var(--border-color);
         }
 
         .modal-header {
@@ -539,6 +570,10 @@
             color: white;
         }
 
+        [data-theme="dark"] .empty-state {
+            color: var(--text-secondary);
+        }
+
         .empty-state i {
             font-size: 72px;
             margin-bottom: 20px;
@@ -563,13 +598,17 @@
             letter-spacing: 0.5px;
         }
 
+        [data-theme="dark"] .section-title {
+            color: var(--text-primary);
+        }
+
         .loading-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.7);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -617,7 +656,6 @@
             </div>
 
             <div class="favorites-section">
-            
                 <div id="favoritesList"></div>
             </div>
         </div>
@@ -642,22 +680,23 @@
         </div>
     </div>
 
-    <!-- Modal Adicionar Ativo -->
+    <!-- Modal Adicionar/Editar Ativo -->
     <div class="modal fade" id="addAssetModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Novo Ativo</h5>
+                    <h5 class="modal-title" id="assetModalTitle">Novo Ativo</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="assetForm">
+                        <input type="hidden" id="editAssetId">
                         <div class="mb-3">
                             <label class="form-label">Nome</label>
                             <input type="text" class="form-control" id="assetName" required placeholder="Ex: Cartão de Crédito">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Valor Inicial</label>
+                            <label class="form-label">Valor Total</label>
                             <input type="number" step="0.01" class="form-control" id="assetValue" required placeholder="0.00">
                         </div>
                         <div class="mb-3">
@@ -668,7 +707,7 @@
                             <label class="form-label">Descrição</label>
                             <textarea class="form-control" id="assetDesc" rows="2" placeholder="Informações adicionais (opcional)"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Adicionar Ativo</button>
+                        <button type="submit" class="btn btn-primary" id="assetSubmitBtn">Adicionar Ativo</button>
                     </form>
                 </div>
             </div>
@@ -705,9 +744,10 @@
         let transactions = [];
         let favorites = [];
         let selectedColor = '#4f46e5';
+        let editingAssetId = null;
 
         const COLORS = [
-            '#ef4444', '#f59e0b', '#10b981', '#3b82f6', 
+            '#00BCFF', '#E80537', '#820AD1', '#3b82f6', 
             '#8b5cf6', '#ec4899', '#14b8a6', '#f97316',
             '#6366f1', '#84cc16', '#06b6d4', '#a855f7',
             '#22c55e', '#eab308', '#0ea5e9', '#d946ef',
@@ -830,7 +870,6 @@
 
         function calculateStats() {
             const totalBalance = assets.reduce((sum, asset) => sum + asset.value, 0);
-
             document.getElementById('totalBalance').textContent = formatCurrency(totalBalance);
             document.getElementById('totalAssets').textContent = assets.length;
         }
@@ -955,6 +994,9 @@
                         <button class="btn-action btn-remove" onclick="showTransactionModal('${asset.id}', 'remove')">
                             <i class="fas fa-minus"></i> Remover
                         </button>
+                        <button class="btn-action btn-edit" onclick="showEditAssetModal('${asset.id}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
                         <button class="btn-action btn-delete" onclick="deleteAsset('${asset.id}')">
                             <i class="fas fa-trash"></i>
                         </button>
@@ -1029,10 +1071,34 @@
         }
 
         function showAddAssetModal() {
+            editingAssetId = null;
             const modal = new bootstrap.Modal(document.getElementById('addAssetModal'));
+            document.getElementById('assetModalTitle').textContent = 'Novo Ativo';
+            document.getElementById('assetSubmitBtn').textContent = 'Adicionar Ativo';
             document.getElementById('assetForm').reset();
+            document.getElementById('editAssetId').value = '';
             selectedColor = COLORS[0];
             initColorPicker();
+            modal.show();
+        }
+
+        function showEditAssetModal(assetId) {
+            editingAssetId = assetId;
+            const asset = assets.find(a => a.id === assetId);
+            
+            if (!asset) return;
+            
+            const modal = new bootstrap.Modal(document.getElementById('addAssetModal'));
+            document.getElementById('assetModalTitle').textContent = 'Editar Ativo';
+            document.getElementById('assetSubmitBtn').textContent = 'Salvar Alterações';
+            document.getElementById('editAssetId').value = assetId;
+            document.getElementById('assetName').value = asset.name;
+            document.getElementById('assetValue').value = asset.value;
+            document.getElementById('assetDesc').value = asset.description || '';
+            
+            selectedColor = asset.color || COLORS[0];
+            initColorPicker();
+            
             modal.show();
         }
 
@@ -1052,15 +1118,30 @@
         document.getElementById('assetForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const asset = {
-                id: Date.now().toString(),
+            const assetId = document.getElementById('editAssetId').value;
+            const assetData = {
                 name: document.getElementById('assetName').value,
                 value: parseFloat(document.getElementById('assetValue').value),
                 color: selectedColor,
                 description: document.getElementById('assetDesc').value
             };
 
-            assets.push(asset);
+            if (assetId) {
+                const assetIndex = assets.findIndex(a => a.id === assetId);
+                if (assetIndex !== -1) {
+                    assets[assetIndex] = {
+                        ...assets[assetIndex],
+                        ...assetData
+                    };
+                }
+            } else {
+                const newAsset = {
+                    id: Date.now().toString(),
+                    ...assetData
+                };
+                assets.push(newAsset);
+            }
+
             await saveData();
             renderAssets();
             renderFavorites();
@@ -1126,46 +1207,5 @@
 
         init();
     </script>
-    <script>
-// Solicitar permissão para notificações
-async function requestNotificationPermission() {
-  if ('Notification' in window && 'serviceWorker' in navigator) {
-    const permission = await Notification.requestPermission();
-    
-    if (permission === 'granted') {
-      console.log('Permissão para notificações concedida');
-      
-      // Registrar periodic sync para notificações diárias
-      if ('periodicSync' in registration) {
-        try {
-          await registration.periodicSync.register('daily-reminder', {
-            minInterval: 24 * 60 * 60 * 1000 // 24 horas
-          });
-        } catch (error) {
-          console.log('Periodic Sync não suportado:', error);
-        }
-      }
-    }
-  }
-}
-
-// Iniciar quando a página carregar
-document.addEventListener('DOMContentLoaded', function() {
-  // Solicitar permissão após um breve delay
-  setTimeout(requestNotificationPermission, 2000);
-});
-
-// Função para usuário configurar horário personalizado
-function setCustomNotificationTime(hour, minute) {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.ready.then(registration => {
-      registration.active.postMessage({
-        type: 'SET_NOTIFICATION_TIME',
-        time: `${hour}:${minute}`
-      });
-    });
-  }
-}
-</script>
 </body>
 </html>
