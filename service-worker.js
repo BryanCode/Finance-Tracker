@@ -201,7 +201,7 @@ self.addEventListener('notificationclick', event => {
         setTimeout(() => {
           showScheduledNotification();
           resolve();
-        }, 60 * 60 * 1000); // 1 hora
+        }, 60 * 60 * 100); // 1 hora
       })
     );
   } else if (event.action === 'close') {
