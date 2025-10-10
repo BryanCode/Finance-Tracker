@@ -8,7 +8,7 @@
   "orientation": "portrait",
   "theme_color": "#262A4C",
   "background_color": "#262A4C",
-  "icons":  [
+   "icons": [
     {
       "src": "windows11/SmallTile.scale-100.png",
       "sizes": "71x71"
