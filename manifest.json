@@ -3,7 +3,7 @@
   "short_name": "Finance Tracker",
   "description": "Aplicativo de controle de finanças pessoais com gestão de ativos",
   "start_url": "/finance-tracker/",
-  "scope": "https://bryancode.github.io/finance-tracker/",
+  "scope": "https://bryancode.github.io/Finance-Tracker/",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#262A4C",
