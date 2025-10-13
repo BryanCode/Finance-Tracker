@@ -596,6 +596,7 @@
 
     <!-- BOTÕES FLUTUANTES -->
     <div class="floating-buttons">
+        <button class="btn-floating btn-theme-toggle" onclick="gotoBFT()" id="themeBtn"><i class="fa-solid fa-dollar-sign"></i></button>
         <button class="btn-floating btn-theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
         <button class="btn-floating btn-add-toggle" onclick="toggleForm()" id="addBtn">+</button>
     </div>
@@ -607,7 +608,7 @@
             <div class="nav-label">Hoje</div>
         </div>
         <div class="nav-item" data-tab="concluidas" onclick="switchTab('concluidas')">
-            <div class="nav-icon">✓</div>
+            <div class="nav-icon"><i class="fa-solid fa-check-double"></i></div>
             <div class="nav-label">Concluídas</div>
         </div>
         <div class="nav-item" data-tab="pendentes" onclick="switchTab('pendentes')">
@@ -625,6 +626,10 @@
             const btn = document.getElementById('addBtn');
             form.classList.toggle('active');
             btn.classList.toggle('active');
+        }
+
+        function gotoBFT() {
+            window.location.href = 'https://github.dev/BryanCode/Finance-Tracker'
         }
 
         function toggleTheme() {
