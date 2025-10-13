@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Treinos</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Georama:wght@300;400;600;700&display=swap" rel="stylesheet">
+   
+   <style>
+        :root {
+            --color1: #b1b2e2;
+            --color2: #9193c1;
+            --color3: #71749f;
+            --color4: #50547e;
+            --color5: #30355c;
+            --color1rgba: #b1b2e289;
+            --color2rgba: #9193c176;
+            --bg-primary: linear-gradient(135deg, var(--color2) 0%, var(--color4) 100%);
+            --bg-card: #ffffff;
+            --text-primary: var(--color5);
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --success: #10b981;
+            --success-light: #d1fae5;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: linear-gradient(135deg, #0f0f1a 0%, #050510 100%);
+            --bg-card: #1a1a2e;
+            --text-primary: #ffffff;
+            --text-secondary: #b1b2e2;
+            --border-color: #2a2a40;
+            --shadow: rgba(0, 0, 0, 0.5);
+            --success-light: rgba(16, 185, 129, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Georama', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            padding: 20px 0 100px;
+            color: var(--text-primary);
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        .dashboard {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .dashboard-top {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .dashboard-label {
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 8px;
+        }
+
+        .dashboard-value {
+            color: var(--text-primary);
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .workout-badge {
+            background: linear-gradient(135deg, var(--color1rgba) 0%, var(--color2rgba) 100%);
+            color: var(--color5);
+            border-radius: 20px;
+            padding: 12px 18px;
+            text-align: center;
+            min-width: 90px;
+        }
+
+        [data-theme="dark"] .workout-badge {
+            color: #ffffff;
+            background: linear-gradient(135deg, rgba(80, 84, 126, 0.3) 0%, rgba(48, 53, 92, 0.3) 100%);
+        }
+
+        .workout-badge .label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            opacity: 0.9;
+        }
+
+        .workout-badge .value {
+            font-size: 26px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        /* Progress Bar */
+        .progress-section {
+            margin-top: 20px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .progress-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .progress-percentage {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--color3);
+        }
+
+        .progress-bar-container {
+            height: 10px;
+            background: var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color3), var(--color1));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            box-shadow: 0 2px 8px rgba(113, 116, 159, 0.3);
+        }
+
+        /* Chronometer */
+        .chronometer {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 20px var(--shadow);
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .chronometer-display {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 2px;
+        }
+
+        .chronometer-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .chrono-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Georama', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .chrono-btn.start {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            color: white;
+        }
+
+        .chrono-btn.pause {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .chrono-btn.reset {
+            background: var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .chrono-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .chrono-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Navigation */
+        .top-navbar {
+            background: var(--bg-card);
+            padding: 15px;
+            box-shadow: 0 4px 20px var(--shadow);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 8px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 18px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 14px;
+            position: relative;
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--color3), var(--color1));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(135deg, var(--color1rgba) 0%, var(--color2rgba) 100%);
+            transform: translateY(-2px);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            transition: all 0.3s ease;
+            opacity: 0.6;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--color3) 0%, var(--color4) 100%);
+        }
+
+        .nav-item.active::after {
+            width: 60%;
+        }
+
+        .nav-item.active .nav-icon {
+            opacity: 1;
+            transform: scale(1.15);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .nav-item.active .nav-label {
+            color: white;
+            font-weight: 700;
+        }
+
+        [data-theme="dark"] .nav-item.active .nav-label {
+            color: white;
+        }
+
+        .section-title {
+            color: var(--text-primary);
+            font-size: 22px;
+            font-weight: 700;
+            margin: 15px 0 20px;
+            padding: 0 5px;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--color3);
+        }
+
+        .content-container {
+            display: none;
+        }
+
+        .content-container.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .exercise-item {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px var(--shadow);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            border-left: 6px solid var(--color3);
+            position: relative;
+        }
+
+        .exercise-item.completed {
+            border-left-color: var(--success);
+            background: var(--success-light);
+        }
+
+        [data-theme="dark"] .exercise-item {
+            border: 1px solid var(--border-color);
+            border-left: 6px solid var(--color3);
+        }
+
+        [data-theme="dark"] .exercise-item.completed {
+            border-left-color: var(--success);
+        }
+
+        .exercise-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+
+        .exercise-checkbox-wrapper {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .checkbox-container {
+            position: relative;
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+
+        .exercise-checkbox {
+            width: 26px;
+            height: 26px;
+            cursor: pointer;
+            opacity: 0;
+            position: absolute;
+        }
+
+        .checkbox-custom {
+            width: 26px;
+            height: 26px;
+            border: 3px solid var(--color3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            background: var(--bg-card);
+        }
+
+        .exercise-checkbox:checked + .checkbox-custom {
+            background: var(--success);
+            border-color: var(--success);
+            transform: scale(1.1);
+        }
+
+        .checkbox-custom i {
+            color: white;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .exercise-checkbox:checked + .checkbox-custom i {
+            opacity: 1;
+        }
+
+        .exercise-content {
+            flex: 1;
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .exercise-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            transition: all 0.3s;
+        }
+
+        .exercise-item.completed .exercise-title {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .exercise-load {
+            background: linear-gradient(135deg, var(--color1rgba) 0%, var(--color2rgba) 100%);
+            color: var(--color5);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        [data-theme="dark"] .exercise-load {
+            color: #ffffff;
+        }
+
+        .exercise-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .exercise-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Georama', sans-serif;
+        }
+
+        .btn-delete {
+            background: var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .btn-delete:hover {
+            background: #fecaca;
+            color: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .btn-action:active {
+            transform: scale(0.95);
+        }
+
+        .add-form {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 0;
+            margin-top: -15px;
+            box-shadow: 0 10px 40px var(--shadow);
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border-color);
+        }
+
+        .add-form.active {
+            max-height: 800px;
+            opacity: 1;
+            margin-top: unset;
+            margin-bottom: 24px;
+            padding: 28px;
+            transform: translateY(0);
+        }
+
+        .add-form h3 {
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            font-size: 15px;
+            font-family: 'Georama', sans-serif;
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--color3);
+            box-shadow: 0 0 0 3px rgba(113, 116, 159, 0.2);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--color3) 0%, var(--color4) 100%);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Georama', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, var(--color4) 0%, var(--color5) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+
+        .empty-state h5 {
+            margin-bottom: 8px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .profile-info {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .profile-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .profile-row:last-child {
+            border-bottom: none;
+        }
+
+        .profile-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .profile-value {
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .fab-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 12px;
+            z-index: 1000;
+        }
+
+        .fab, .theme-toggle-fab {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+
+        .fab {
+            background: linear-gradient(135deg, var(--color3) 0%, var(--color4) 100%);
+            color: white;
+        }
+
+        .fab:hover, .theme-toggle-fab:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 30px var(--shadow);
+        }
+
+        .fab.active {
+            transform: rotate(45deg);
+        }
+
+        .theme-toggle-fab {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            color: var(--color3);
+            font-size: 22px;
+        }
+
+        [data-theme="dark"] .theme-toggle-fab {
+            color: var(--color1);
+        }
+
+        .fab:active, .theme-toggle-fab:active {
+            transform: scale(0.9);
+        }
+
+        @media (max-width: 400px) {
+            .top-navbar {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .nav-label {
+                font-size: 9px;
+            }
+        }
+   </style>
+
+</head>
+<body>
+
+    <div class="container">
+        <!-- DASHBOARD -->
+        <div class="dashboard">
+            <div class="dashboard-top">
+                <div>
+                    <div class="dashboard-label">Meus Treinos</div>
+                    <div class="dashboard-value" id="userName">Carregando...</div>
+                </div>
+                <div class="workout-badge">
+                    <div class="label">Exercícios</div>
+                    <div class="value" id="totalExercises">0</div>
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="progress-section">
+                <div class="progress-info">
+                    <span class="progress-label">Progresso do Treino</span>
+                    <span class="progress-percentage" id="progressText">0%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHRONOMETER -->
+        <div class="chronometer">
+            <div class="chronometer-display" id="chronoDisplay">00:00</div>
+            <div class="chronometer-controls">
+                <button class="chrono-btn start" id="chronoStart" onclick="startChrono()">
+                    <i class="fas fa-play"></i> Iniciar
+                </button>
+                <button class="chrono-btn pause" id="chronoPause" onclick="pauseChrono()" style="display: none;">
+                    <i class="fas fa-pause"></i> Pausar
+                </button>
+                <button class="chrono-btn reset" onclick="resetChrono()">
+                    <i class="fas fa-redo"></i> Resetar
+                </button>
+            </div>
+        </div>
+
+        <!-- NAVBAR -->
+        <div class="top-navbar">
+            <div class="nav-item active" data-tab="segunda" onclick="switchTab('segunda')">
+                <div class="nav-icon">💪</div>
+                <div class="nav-label">Segunda</div>
+            </div>
+            <div class="nav-item" data-tab="terca" onclick="switchTab('terca')">
+                <div class="nav-icon">🦵</div>
+                <div class="nav-label">Terça</div>
+            </div>
+            <div class="nav-item" data-tab="quarta" onclick="switchTab('quarta')">
+                <div class="nav-icon">🔥</div>
+                <div class="nav-label">Quarta</div>
+            </div>
+            <div class="nav-item" data-tab="quinta" onclick="switchTab('quinta')">
+                <div class="nav-icon">💪</div>
+                <div class="nav-label">Quinta</div>
+            </div>
+            <div class="nav-item" data-tab="sexta" onclick="switchTab('sexta')">
+                <div class="nav-icon">😴</div>
+                <div class="nav-label">Sexta</div>
+            </div>
+            <div class="nav-item" data-tab="coringa" onclick="switchTab('coringa')">
+                <div class="nav-icon">🎯</div>
+                <div class="nav-label">Sábado</div>
+            </div>
+            <div class="nav-item" data-tab="perfil" onclick="switchTab('perfil')">
+                <div class="nav-icon">👤</div>
+                <div class="nav-label">Perfil</div>
+            </div>
+        </div>
+
+        <!-- FORMULÁRIO DE EXERCÍCIO -->
+        <div class="add-form" id="exerciseForm">
+            <h3>Novo Exercício</h3>
+            <div class="form-group">
+                <label>Nome do Exercício</label>
+                <input type="text" id="exerciseName" placeholder="Ex: Supino reto">
+            </div>
+            <div class="form-group">
+                <label>Descrição/Observações</label>
+                <textarea id="exerciseDesc" placeholder="Ex: 4x12, descanso 60s"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Carga</label>
+                <input type="text" id="exerciseLoad" placeholder="Ex: 80kg">
+            </div>
+            <button class="btn-submit" onclick="addExercise()">Adicionar Exercício</button>
+        </div>
+
+        <!-- FORMULÁRIO DE PERFIL -->
+        <div class="add-form" id="profileForm">
+            <h3>Editar Perfil</h3>
+            <div class="form-group">
+                <label>Nome</label>
+                <input type="text" id="profileName" placeholder="Seu nome">
+            </div>
+            <div class="form-group">
+                <label>Data de Nascimento</label>
+                <input type="date" id="profileBirth">
+            </div>
+            <div class="form-group">
+                <label>Peso (kg)</label>
+                <input type="number" id="profileWeight" placeholder="Ex: 75" step="0.1">
+            </div>
+            <div class="form-group">
+                <label>Altura (cm)</label>
+                <input type="number" id="profileHeight" placeholder="Ex: 175">
+            </div>
+            <button class="btn-submit" onclick="saveProfile()">Salvar Perfil</button>
+        </div>
+
+        <div class="section-title" id="sectionTitle"><i class="fas fa-dumbbell"></i> Segunda-feira</div>
+        
+        <!-- CONTEÚDO DOS DIAS -->
+        <div class="content-container active" id="content-segunda"></div>
+        <div class="content-container" id="content-terca"></div>
+        <div class="content-container" id="content-quarta"></div>
+        <div class="content-container" id="content-quinta"></div>
+        <div class="content-container" id="content-sexta"></div>
+        <div class="content-container" id="content-coringa"></div>
+        <div class="content-container" id="content-perfil"></div>
+    </div>
+
+    <div class="fab-container">
+        <button class="theme-toggle-fab" onclick="toggleTheme()">
+            <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+        <button class="theme-toggle-fab" onclick="goToFTracker()">
+            <i class="fa-solid fa-dollar-sign"></i>
+        </button>
+        <button class="theme-toggle-fab" onclick="goToTasks()">
+            <i class="fa-solid fa-list"></i>
+        </button>
+        <button class="fab" onclick="toggleForm()" id="addBtn">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+
+    <script>
+
+        function goToFTracker() {
+            window.location.href = 'https://bryancode.github.io/Finance-Tracker/'
+        }
+
+        function goToTasks() {
+              window.location.href = 'https://bryancode.github.io/Finance-Tracker/to-do.html'
+        }
+
+const DB_URL = 'https://lawme-da3af-default-rtdb.firebaseio.com';
+let workouts = {};
+let profile = {};
+let currentTab = 'segunda';
+let completedExercises = {};
+
+// Chronometer variables
+let chronoInterval = null;
+let chronoSeconds = 0;
+let chronoRunning = false;
+
+const dayNames = {
+    'segunda': 'Segunda-feira',
+    'terca': 'Terça-feira',
+    'quarta': 'Quarta-feira',
+    'quinta': 'Quinta-feira',
+    'sexta': 'Sexta-feira',
+    'coringa': 'Sábado',
+    'perfil': 'Meu Perfil'
+};
+
+const dayIcons = {
+    'segunda': 'fa-dumbbell',
+    'terca': 'fa-dumbbell',
+    'quarta': 'fa-fire',
+    'quinta': 'fa-dumbbell',
+    'sexta': 'fa-bed',
+    'coringa': 'fa-star',
+    'perfil': 'fa-user'
+};
+
+const dayMapping = {
+    0: 'segunda',
+    1: 'terca',
+    2: 'quarta',
+    3: 'quinta',
+    4: 'sexta',
+    5: 'coringa'
+};
+
+// Chronometer Functions
+function startChrono() {
+    if (!chronoRunning) {
+        chronoRunning = true;
+        document.getElementById('chronoStart').style.display = 'none';
+        document.getElementById('chronoPause').style.display = 'inline-block';
+        
+        chronoInterval = setInterval(() => {
+            chronoSeconds++;
+            updateChronoDisplay();
+        }, 1000);
+    }
+}
+
+function pauseChrono() {
+    if (chronoRunning) {
+        chronoRunning = false;
+        clearInterval(chronoInterval);
+        document.getElementById('chronoStart').style.display = 'inline-block';
+        document.getElementById('chronoPause').style.display = 'none';
+    }
+}
+
+function resetChrono() {
+    pauseChrono();
+    chronoSeconds = 0;
+    updateChronoDisplay();
+}
+
+function updateChronoDisplay() {
+    const minutes = Math.floor(chronoSeconds / 60);
+    const seconds = chronoSeconds % 60;
+    document.getElementById('chronoDisplay').textContent = 
+        `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+// Load completed exercises from memory
+function loadCompletedExercises() {
+    const today = new Date().toDateString();
+    const savedKey = `completed_${currentTab}_${today}`;
+    const saved = localStorage.getItem(savedKey);
+    completedExercises[currentTab] = saved ? JSON.parse(saved) : {};
+}
+
+function saveCompletedExercises() {
+    const today = new Date().toDateString();
+    const savedKey = `completed_${currentTab}_${today}`;
+    localStorage.setItem(savedKey, JSON.stringify(completedExercises[currentTab] || {}));
+    updateProgress();
+}
+
+function toggleExerciseComplete(day, id) {
+    if (!completedExercises[day]) {
+        completedExercises[day] = {};
+    }
+    
+    completedExercises[day][id] = !completedExercises[day][id];
+    saveCompletedExercises();
+    renderDay(day);
+}
+
+function updateProgress() {
+    const dayWorkouts = workouts[currentTab];
+    if (!dayWorkouts || Object.keys(dayWorkouts).length === 0) {
+        document.getElementById('progressBar').style.width = '0%';
+        document.getElementById('progressText').textContent = '0%';
+        return;
+    }
+    
+    const total = Object.keys(dayWorkouts).length;
+    const completed = Object.keys(completedExercises[currentTab] || {}).filter(
+        id => completedExercises[currentTab][id]
+    ).length;
+    
+    const percentage = Math.round((completed / total) * 100);
+    document.getElementById('progressBar').style.width = percentage + '%';
+    document.getElementById('progressText').textContent = percentage + '%';
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const currentTheme = html.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    const icon = document.getElementById('themeIcon');
+    
+    html.setAttribute('data-theme', newTheme);
+    icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    localStorage.setItem('theme', newTheme);
+}
+
+function loadTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    const icon = document.getElementById('themeIcon');
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+}
+
+function toggleForm() {
+    if (currentTab === 'perfil') {
+        const form = document.getElementById('profileForm');
+        const btn = document.getElementById('addBtn');
+        form.classList.toggle('active');
+        btn.classList.toggle('active');
+    } else {
+        const form = document.getElementById('exerciseForm');
+        const btn = document.getElementById('addBtn');
+        form.classList.toggle('active');
+        btn.classList.toggle('active');
+    }
+}
+
+function switchTab(tabName) {
+    currentTab = tabName;
+    
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    document.querySelectorAll('.content-container').forEach(container => {
+        container.classList.remove('active');
+    });
+    
+    document.querySelector(`.nav-item[data-tab="${tabName}"]`).classList.add('active');
+    document.getElementById(`content-${tabName}`).classList.add('active');
+    
+    const icon = dayIcons[tabName] ? `<i class="fas ${dayIcons[tabName]}"></i>` : '';
+    document.getElementById('sectionTitle').innerHTML = `${icon} ${dayNames[tabName]}`;
+
+    document.getElementById('exerciseForm').classList.remove('active');
+    document.getElementById('profileForm').classList.remove('active');
+    document.getElementById('addBtn').classList.remove('active');
+
+    if (tabName === 'perfil') {
+        renderProfile();
+    } else {
+        loadCompletedExercises();
+        updateProgress();
+    }
+}
+
+function convertFirebaseData(firebaseWorkouts) {
+    const converted = {};
+    
+    if (Array.isArray(firebaseWorkouts)) {
+        firebaseWorkouts.forEach((workout, index) => {
+            const dayKey = dayMapping[index];
+            if (dayKey && workout && workout.exercises) {
+                converted[dayKey] = {};
+                workout.exercises.forEach((exercise, exerciseIndex) => {
+                    const id = `${dayKey}_${exerciseIndex}`;
+                    converted[dayKey][id] = {
+                        name: exercise.name,
+                        description: exercise.description,
+                        load: exercise.load
+                    };
+                });
+            }
+        });
+    }
+    
+    return converted;
+}
+
+function convertToFirebaseFormat(internalWorkouts) {
+    const firebaseWorkouts = [];
+    
+    Object.keys(dayMapping).forEach(index => {
+        const dayKey = dayMapping[index];
+        const dayExercises = internalWorkouts[dayKey] || {};
+        
+        const exercises = Object.values(dayExercises).map(exercise => ({
+            name: exercise.name,
+            description: exercise.description,
+            load: exercise.load
+        }));
+        
+        firebaseWorkouts.push({
+            title: dayNames[dayKey],
+            exercises: exercises
+        });
+    });
+    
+    return firebaseWorkouts;
+}
+
+async function loadData() {
+    try {
+        const [workoutsRes, profileRes] = await Promise.all([
+            fetch(`${DB_URL}/workouts.json`),
+            fetch(`${DB_URL}/profile.json`)
+        ]);
+        
+        const firebaseWorkouts = await workoutsRes.json();
+        const firebaseProfile = await profileRes.json();
+        
+        workouts = convertFirebaseData(firebaseWorkouts);
+        
+        profile = firebaseProfile || {};
+        if (profile.birthDate && !profile.birth) {
+            profile.birth = profile.birthDate;
+        }
+        
+        updateStats();
+        renderAllDays();
+        renderProfile();
+        loadCompletedExercises();
+        updateProgress();
+    } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+    }
+}
+
+function updateStats() {
+    let total = 0;
+    for (let day in workouts) {
+        if (workouts[day]) {
+            total += Object.keys(workouts[day]).length;
+        }
+    }
+    document.getElementById('totalExercises').textContent = total;
+    document.getElementById('userName').textContent = profile.name || 'Atleta';
+}
+
+async function addExercise() {
+    const name = document.getElementById('exerciseName').value.trim();
+    const desc = document.getElementById('exerciseDesc').value.trim();
+    const load = document.getElementById('exerciseLoad').value.trim();
+
+    if (!name) {
+        alert('Digite o nome do exercício!');
+        return;
+    }
+
+    if (!workouts[currentTab]) {
+        workouts[currentTab] = {};
+    }
+
+    const dayExercises = Object.keys(workouts[currentTab]).length;
+    if (dayExercises >= 6) {
+        alert('Limite de 6 exercícios por dia atingido!');
+        return;
+    }
+
+    const id = Date.now().toString();
+    workouts[currentTab][id] = {
+        name,
+        description: desc,
+        load: load || 'Sem carga'
+    };
+
+    await saveWorkouts();
+    
+    document.getElementById('exerciseName').value = '';
+    document.getElementById('exerciseDesc').value = '';
+    document.getElementById('exerciseLoad').value = '';
+    
+    toggleForm();
+    renderDay(currentTab);
+    updateStats();
+    updateProgress();
+}
+
+async function deleteExercise(day, id) {
+    if (confirm('Deseja realmente excluir este exercício?')) {
+        delete workouts[day][id];
+        if (Object.keys(workouts[day]).length === 0) {
+            delete workouts[day];
+        }
+        
+        if (completedExercises[day] && completedExercises[day][id]) {
+            delete completedExercises[day][id];
+            saveCompletedExercises();
+        }
+        
+        await saveWorkouts();
+        renderDay(day);
+        updateStats();
+        updateProgress();
+    }
+}
+
+async function saveWorkouts() {
+    try {
+        const firebaseFormat = convertToFirebaseFormat(workouts);
+        
+        await fetch(`${DB_URL}/workouts.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(firebaseFormat)
+        });
+    } catch (error) {
+        console.error('Erro ao salvar treinos:', error);
+    }
+}
+
+async function saveProfile() {
+    const name = document.getElementById('profileName').value.trim();
+    const birth = document.getElementById('profileBirth').value;
+    const weight = document.getElementById('profileWeight').value;
+    const height = document.getElementById('profileHeight').value;
+
+    if (!name) {
+        alert('Digite seu nome!');
+        return;
+    }
+
+    const profileData = { 
+        name, 
+        birthDate: birth,
+        birth: birth,
+        weight: weight ? parseFloat(weight) : null,
+        height: height ? parseFloat(height) : null
+    };
+
+    try {
+        await fetch(`${DB_URL}/profile.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(profileData)
+        });
+        
+        profile = profileData;
+        toggleForm();
+        renderProfile();
+        updateStats();
+    } catch (error) {
+        console.error('Erro ao salvar perfil:', error);
+    }
+}
+
+function calculateAge(birthDate) {
+    if (!birthDate) return '-';
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        age--;
+    }
+    return age;
+}
+
+function calculateIMC(weight, height) {
+    if (!weight || !height) return '-';
+    const imc = (parseFloat(weight) / Math.pow(parseFloat(height) / 100, 2)).toFixed(1);
+    return imc;
+}
+
+function renderProfile() {
+    const container = document.getElementById('content-perfil');
+    
+    if (!profile.name) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-user-circle"></i>
+                <h5>Perfil não configurado</h5>
+                <p>Clique no + para criar seu perfil</p>
+            </div>
+        `;
+        return;
+    }
+
+    const age = calculateAge(profile.birth || profile.birthDate);
+    const imc = calculateIMC(profile.weight, profile.height);
+
+    container.innerHTML = `
+        <div class="profile-info">
+            <div class="profile-row">
+                <span class="profile-label">Nome</span>
+                <span class="profile-value">${profile.name}</span>
+            </div>
+            <div class="profile-row">
+                <span class="profile-label">Idade</span>
+                <span class="profile-value">${age} anos</span>
+            </div>
+            <div class="profile-row">
+                <span class="profile-label">Peso</span>
+                <span class="profile-value">${profile.weight ? profile.weight + ' kg' : '-'}</span>
+            </div>
+            <div class="profile-row">
+                <span class="profile-label">Altura</span>
+                <span class="profile-value">${profile.height ? profile.height + ' cm' : '-'}</span>
+            </div>
+            <div class="profile-row">
+                <span class="profile-label">IMC</span>
+                <span class="profile-value">${imc}</span>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('profileName').value = profile.name || '';
+    document.getElementById('profileBirth').value = profile.birth || profile.birthDate || '';
+    document.getElementById('profileWeight').value = profile.weight || '';
+    document.getElementById('profileHeight').value = profile.height || '';
+}
+
+function renderDay(day) {
+    const container = document.getElementById(`content-${day}`);
+    const dayWorkouts = workouts[day];
+
+    if (!dayWorkouts || Object.keys(dayWorkouts).length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-dumbbell"></i>
+                <h5>Nenhum exercício cadastrado</h5>
+                <p>Clique no + para adicionar exercícios</p>
+            </div>
+        `;
+        return;
+    }
+
+    const exercisesHTML = Object.entries(dayWorkouts).map(([id, exercise]) => {
+        const isCompleted = completedExercises[day] && completedExercises[day][id];
+        
+        return `
+        <div class="exercise-item ${isCompleted ? 'completed' : ''}">
+            <div class="exercise-checkbox-wrapper">
+                <div class="checkbox-container">
+                    <input type="checkbox" 
+                           class="exercise-checkbox" 
+                           id="check_${id}"
+                           ${isCompleted ? 'checked' : ''}
+                           onchange="toggleExerciseComplete('${day}', '${id}')">
+                    <label for="check_${id}" class="checkbox-custom">
+                        <i class="fas fa-check"></i>
+                    </label>
+                </div>
+                <div class="exercise-content">
+                    <div class="exercise-header">
+                        <div class="exercise-title">${exercise.name}</div>
+                        <div class="exercise-load">${exercise.load}</div>
+                    </div>
+                    ${exercise.description ? `<div class="exercise-desc">${exercise.description}</div>` : ''}
+                    <div class="exercise-actions">
+                        <button class="btn-action btn-delete" onclick="deleteExercise('${day}', '${id}')">
+                            <i class="fas fa-trash"></i> Excluir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+    }).join('');
+
+    container.innerHTML = exercisesHTML;
+}
+
+function renderAllDays() {
+    const days = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'coringa'];
+    days.forEach(day => renderDay(day));
+}
+
+loadTheme();
+loadData();
+    </script>
+
+</body>
+</html>
