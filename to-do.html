@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Tarefas</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            padding-bottom: 100px;
+            transition: background 0.5s ease;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+        }
+
+        body.light-mode {
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+        }
+
+        body.light-mode .header h1,
+        body.light-mode .date-info {
+            color: #2d3748;
+        }
+
+        body.light-mode .empty-state {
+            color: #718096;
+        }
+
+        body.light-mode .loading {
+            color: #4a5568;
+        }
+
+        .container {
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .date-info {
+            font-size: 15px;
+            opacity: 0.9;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+
+        .add-task-form {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+        }
+
+        body.dark-mode .add-task-form {
+            background: rgba(45, 55, 72, 0.95);
+        }
+
+        body.light-mode .add-task-form {
+            background: white;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .add-task-form.active {
+            max-height: 600px;
+            opacity: 1;
+            transform: translateY(0);
+            margin-bottom: 24px;
+        }
+
+        .add-task-form h3 {
+            margin-bottom: 20px;
+            color: #2d3748;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        body.dark-mode .add-task-form h3 {
+            color: #e2e8f0;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        body.dark-mode .form-group label {
+            color: #cbd5e0;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            background: white;
+        }
+
+        body.dark-mode .form-group input,
+        body.dark-mode .form-group select {
+            background: #2d3748;
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .btn-add {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-add:active {
+            transform: translateY(0);
+        }
+
+        .tasks-container {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .tasks-container.active {
+            display: block;
+        }
+
+        .task-item {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid #cbd5e0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        body.dark-mode .task-item {
+            background: rgba(45, 55, 72, 0.95);
+        }
+
+        body.light-mode .task-item {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+        }
+
+        .task-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .task-item.important {
+            border-left-width: 5px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .task-item.completed {
+            opacity: 0.5;
+        }
+
+        .task-item.Paternidade {
+            border-left-color: #ff6b6b;
+        }
+
+        .task-item.Pessoal {
+            border-left-color: #4ecdc4;
+        }
+
+        .task-item.Trabalho {
+            border-left-color: #ffd93d;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .task-category {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            letter-spacing: 0.3px;
+        }
+
+        .task-category.Paternidade {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        }
+
+        .task-category.Pessoal {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a8a0 100%);
+        }
+
+        .task-category.Trabalho {
+            background: linear-gradient(135deg, #ffd93d 0%, #f6c744 100%);
+            color: #2d3748;
+        }
+
+        .task-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #2d3748;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            line-height: 1.5;
+        }
+
+        body.dark-mode .task-title {
+            color: #e2e8f0;
+        }
+
+        .task-title.completed {
+            text-decoration: line-through;
+            color: #a0aec0;
+        }
+
+        .important-badge {
+            font-size: 16px;
+            filter: drop-shadow(0 2px 4px rgba(255, 215, 0, 0.3));
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-complete {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a8a0 100%);
+            color: white;
+        }
+
+        .btn-complete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.3);
+        }
+
+        .btn-readd {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-readd:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-action:active {
+            transform: translateY(0);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.8;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .loading {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            padding: 40px 20px;
+            font-size: 15px;
+        }
+
+        .tasks-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* NAVBAR BOTTOM ESTILO NUBANK */
+        .bottom-navbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 8px 20px 12px;
+            box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark-mode .bottom-navbar {
+            background: #1a202c;
+            border-top-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode .bottom-navbar {
+            background: white;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            flex: 1;
+            max-width: 100px;
+        }
+
+        .nav-item:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            transition: all 0.3s ease;
+            opacity: 0.5;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: #718096;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .nav-label {
+            color: #a0aec0;
+        }
+
+        .nav-item.active .nav-icon {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .nav-item.active .nav-label {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        body.dark-mode .nav-item.active .nav-label {
+            color: #a78bfa;
+        }
+
+        /* BOTÕES FLUTUANTES NO CANTO DIREITO INFERIOR */
+        .floating-buttons {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 999;
+        }
+
+        .btn-floating {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-floating:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-floating:active {
+            transform: scale(0.95);
+        }
+
+        .btn-add-toggle {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 28px;
+            font-weight: 300;
+        }
+
+        .btn-add-toggle.active {
+            transform: rotate(45deg);
+        }
+
+        .btn-theme-toggle {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            color: #4a5568;
+            font-size: 22px;
+        }
+
+        body.dark-mode .btn-theme-toggle {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: #fbd38d;
+        }
+
+        body.light-mode .btn-theme-toggle {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 Minhas Tarefas</h1>
+            <div class="date-info" id="dateInfo"></div>
+        </div>
+
+        <div class="add-task-form">
+            <h3>Nova Tarefa</h3>
+            <div class="form-group">
+                <label>Tarefa</label>
+                <input type="text" id="taskInput" placeholder="Digite sua tarefa...">
+            </div>
+            <div class="form-group">
+                <label>Categoria</label>
+                <select id="categorySelect">
+                    <option value="Paternidade">Paternidade</option>
+                    <option value="Pessoal">Pessoal</option>
+                    <option value="Trabalho">Trabalho</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="importantCheck">
+                    <label for="importantCheck" style="margin: 0;">Marcar como importante</label>
+                </div>
+            </div>
+            <button class="btn-add" onclick="addTask()">Adicionar Tarefa</button>
+        </div>
+
+        <div class="tasks-container active" id="tab-hoje">
+            <div class="loading">Carregando tarefas...</div>
+        </div>
+
+        <div class="tasks-container" id="tab-concluidas">
+            <div class="loading">Carregando tarefas...</div>
+        </div>
+
+        <div class="tasks-container" id="tab-pendentes">
+            <div class="loading">Carregando tarefas...</div>
+        </div>
+    </div>
+
+    <!-- BOTÕES FLUTUANTES -->
+    <div class="floating-buttons">
+        <button class="btn-floating btn-theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
+        <button class="btn-floating btn-add-toggle" onclick="toggleForm()" id="addBtn">+</button>
+    </div>
+
+    <!-- NAVBAR BOTTOM ESTILO NUBANK -->
+    <div class="bottom-navbar">
+        <div class="nav-item active" data-tab="hoje" onclick="switchTab('hoje')">
+            <div class="nav-icon">📋</div>
+            <div class="nav-label">Hoje</div>
+        </div>
+        <div class="nav-item" data-tab="concluidas" onclick="switchTab('concluidas')">
+            <div class="nav-icon">✓</div>
+            <div class="nav-label">Concluídas</div>
+        </div>
+        <div class="nav-item" data-tab="pendentes" onclick="switchTab('pendentes')">
+            <div class="nav-icon">⏰</div>
+            <div class="nav-label">Pendentes</div>
+        </div>
+    </div>
+
+    <script>
+        const DB_URL = 'https://satisfaction-survey-25a8f-default-rtdb.firebaseio.com';
+        let tasks = {};
+
+        function toggleForm() {
+            const form = document.querySelector('.add-task-form');
+            const btn = document.getElementById('addBtn');
+            form.classList.toggle('active');
+            btn.classList.toggle('active');
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('themeBtn');
+            
+            if (body.classList.contains('dark-mode')) {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                btn.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            } else if (body.classList.contains('light-mode')) {
+                body.classList.remove('light-mode');
+                btn.textContent = '🌙';
+                localStorage.setItem('theme', 'default');
+            } else {
+                body.classList.add('dark-mode');
+                btn.textContent = '💡';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        function loadTheme() {
+            const theme = localStorage.getItem('theme');
+            const btn = document.getElementById('themeBtn');
+            
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
+                btn.textContent = '💡';
+            } else if (theme === 'light') {
+                document.body.classList.add('light-mode');
+                btn.textContent = '☀️';
+            }
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tasks-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            
+            document.querySelector(`.nav-item[data-tab="${tabName}"]`).classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+
+        function updateDate() {
+            const hoje = new Date();
+            const opcoes = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('dateInfo').textContent = hoje.toLocaleDateString('pt-BR', opcoes);
+        }
+
+        function getTodayDate() {
+            const hoje = new Date();
+            return hoje.toISOString().split('T')[0];
+        }
+
+        async function loadTasks() {
+            try {
+                const response = await fetch(`${DB_URL}/tasks.json`);
+                const data = await response.json();
+                tasks = data || {};
+                await checkAndMovePendingTasks();
+                renderTasks();
+            } catch (error) {
+                console.error('Erro ao carregar tarefas:', error);
+            }
+        }
+
+        async function checkAndMovePendingTasks() {
+            const hoje = getTodayDate();
+            let changed = false;
+
+            for (let id in tasks) {
+                const task = tasks[id];
+                if (task.date !== hoje && !task.completed && task.status !== 'pendente') {
+                    task.status = 'pendente';
+                    changed = true;
+                }
+            }
+
+            if (changed) {
+                await saveTasks();
+            }
+        }
+
+        async function saveTasks() {
+            try {
+                await fetch(`${DB_URL}/tasks.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(tasks)
+                });
+            } catch (error) {
+                console.error('Erro ao salvar tarefas:', error);
+            }
+        }
+
+        async function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const categorySelect = document.getElementById('categorySelect');
+            const importantCheck = document.getElementById('importantCheck');
+
+            if (!taskInput.value.trim()) {
+                alert('Digite uma tarefa!');
+                return;
+            }
+
+            const id = Date.now().toString();
+            tasks[id] = {
+                title: taskInput.value.trim(),
+                category: categorySelect.value,
+                important: importantCheck.checked,
+                completed: false,
+                date: getTodayDate(),
+                status: 'hoje'
+            };
+
+            await saveTasks();
+            taskInput.value = '';
+            importantCheck.checked = false;
+            toggleForm();
+            renderTasks();
+        }
+
+        async function completeTask(id) {
+            tasks[id].completed = true;
+            tasks[id].status = 'concluida';
+            await saveTasks();
+            renderTasks();
+        }
+
+        async function readdTask(id) {
+            tasks[id].date = getTodayDate();
+            tasks[id].status = 'hoje';
+            tasks[id].completed = false;
+            await saveTasks();
+            renderTasks();
+        }
+
+        async function deleteTask(id) {
+            if (confirm('Deseja realmente excluir esta tarefa?')) {
+                delete tasks[id];
+                await saveTasks();
+                renderTasks();
+            }
+        }
+
+        function renderTasks() {
+            const hoje = getTodayDate();
+            
+            const tasksHoje = [];
+            const tasksConcluidas = [];
+            const tasksPendentes = [];
+
+            for (let id in tasks) {
+                const task = { ...tasks[id], id };
+                if (task.status === 'concluida') {
+                    tasksConcluidas.push(task);
+                } else if (task.status === 'pendente') {
+                    tasksPendentes.push(task);
+                } else {
+                    tasksHoje.push(task);
+                }
+            }
+
+            const sortTasks = (a, b) => {
+                if (a.important && !b.important) return -1;
+                if (!a.important && b.important) return 1;
+                return 0;
+            };
+
+            tasksHoje.sort(sortTasks);
+
+            renderTaskList('tab-hoje', tasksHoje, 'hoje');
+            renderTaskList('tab-concluidas', tasksConcluidas, 'concluida');
+            renderTaskList('tab-pendentes', tasksPendentes, 'pendente');
+        }
+
+        function renderTaskList(containerId, taskList, type) {
+            const container = document.getElementById(containerId);
+            
+            if (taskList.length === 0) {
+                const emptyIcons = {
+                    'hoje': '📋',
+                    'concluida': '✨',
+                    'pendente': '📝'
+                };
+                const emptyMessages = {
+                    'hoje': 'Adicione uma nova tarefa!',
+                    'concluida': 'Nenhuma tarefa concluída ainda',
+                    'pendente': 'Todas as tarefas em dia!'
+                };
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">${emptyIcons[type]}</div>
+                        <h3>Nenhuma tarefa aqui</h3>
+                        <p>${emptyMessages[type]}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const tasksHTML = taskList.map(task => `
+                <div class="task-item ${task.category} ${task.important ? 'important' : ''} ${task.completed ? 'completed' : ''}">
+                    <div class="task-header">
+                        <span class="task-category ${task.category}">${task.category}</span>
+                    </div>
+                    <div class="task-title ${task.completed ? 'completed' : ''}">
+                        ${task.important ? '<span class="important-badge">⭐</span>' : ''}
+                        ${task.title}
+                    </div>
+                    <div class="task-actions">
+                        ${type === 'hoje' && !task.completed ? `
+                            <button class="btn-action btn-complete" onclick="completeTask('${task.id}')">✓ Concluir</button>
+                        ` : ''}
+                        ${type === 'pendente' ? `
+                            <button class="btn-action btn-readd" onclick="readdTask('${task.id}')">+ Adicionar Hoje</button>
+                        ` : ''}
+                        <button class="btn-action btn-delete" onclick="deleteTask('${task.id}')">🗑 Excluir</button>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = `<div class="tasks-list">${tasksHTML}</div>`;
+        }
+
+        document.getElementById('taskInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+
+        loadTheme();
+        updateDate();
+        loadTasks();
+        
+        setInterval(() => {
+            updateDate();
+            checkAndMovePendingTasks();
+        }, 60000);
+    </script>
+</body>
+</html>
