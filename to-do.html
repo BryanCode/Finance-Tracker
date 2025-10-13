@@ -44,8 +44,7 @@
             font-family: 'Georama', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-primary);
             min-height: 100vh;
-            padding-top: 80px;
-            padding-bottom: 100px;
+            padding: 30px 0 100px;
             color: var(--text-primary);
         }
 
@@ -55,20 +54,18 @@
             padding: 15px;
         }
 
-        /* NAVBAR TOP */
+        /* NAVBAR REPOSICIONADA */
         .top-navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
             background: var(--bg-card);
             padding: 12px 20px;
             box-shadow: 0 2px 20px var(--shadow);
             display: flex;
             justify-content: space-around;
             align-items: center;
-            z-index: 1000;
-            border-bottom: 1px solid var(--border-color);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 18px;
+            margin-top: 18px;
         }
 
         .nav-item {
@@ -151,10 +148,9 @@
 
         .dashboard-value {
             color: var(--text-primary);
-            font-size: 30px;
+            font-size: 20px;
             font-weight: 700;
             line-height: 1;
-            letter-spacing: -1px;
         }
 
         .tasks-badge {
@@ -228,8 +224,8 @@
         .add-task-form {
             background: var(--bg-card);
             border-radius: 20px;
-            padding: 28px;
-            margin-bottom: 24px;
+            padding: 0;
+            margin-top: -15px;
             box-shadow: 0 10px 40px var(--shadow);
             max-height: 0;
             overflow: hidden;
@@ -242,6 +238,9 @@
         .add-task-form.active {
             max-height: 600px;
             opacity: 1;
+            margin-top: unset;
+            margin-bottom: 24px;
+            padding: 28px;
             transform: translateY(0);
             margin-bottom: 24px;
         }
@@ -318,7 +317,7 @@
             color: var(--text-primary);
             font-size: 20px;
             font-weight: 700;
-            margin: 30px 0 20px;
+            margin: 15px 0 20px;
             padding: 0 5px;
             letter-spacing: 0.5px;
         }
@@ -562,22 +561,6 @@
     </style>
 </head>
 <body>
-    <!-- NAVBAR TOP -->
-    <div class="top-navbar">
-        <div class="nav-item active" data-tab="hoje" onclick="switchTab('hoje')">
-            <div class="nav-icon">📋</div>
-            <div class="nav-label">Hoje</div>
-        </div>
-        <div class="nav-item" data-tab="concluidas" onclick="switchTab('concluidas')">
-            <div class="nav-icon">✓</div>
-            <div class="nav-label">Concluídas</div>
-        </div>
-        <div class="nav-item" data-tab="pendentes" onclick="switchTab('pendentes')">
-            <div class="nav-icon">⏰</div>
-            <div class="nav-label">Pendentes</div>
-        </div>
-    </div>
-
     <div class="container">
         <!-- DASHBOARD -->
         <div class="dashboard">
@@ -605,6 +588,22 @@
                     <div class="stat-number" id="pendingTasks">0</div>
                     <div class="stat-label">Pendentes</div>
                 </div>
+            </div>
+        </div>
+
+        <!-- NAVBAR REPOSICIONADA -->
+        <div class="top-navbar">
+            <div class="nav-item active" data-tab="hoje" onclick="switchTab('hoje')">
+                <div class="nav-icon">📋</div>
+                <div class="nav-label">Hoje</div>
+            </div>
+            <div class="nav-item" data-tab="concluidas" onclick="switchTab('concluidas')">
+                <div class="nav-icon">✓</div>
+                <div class="nav-label">Concluídas</div>
+            </div>
+            <div class="nav-item" data-tab="pendentes" onclick="switchTab('pendentes')">
+                <div class="nav-icon">⏰</div>
+                <div class="nav-label">Pendentes</div>
             </div>
         </div>
 
