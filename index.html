@@ -670,6 +670,9 @@
         <button class="theme-toggle-fab" onclick="toggleTheme()">
             <i class="fas fa-moon" id="themeIcon"></i>
         </button>
+        <button class="theme-toggle-fab" onclick="goToTodo()">
+            <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
         <button class="fab" onclick="showAddAssetModal()">
             <i class="fas fa-plus"></i>
         </button>
@@ -1196,6 +1199,10 @@
                 renderDistribution();
                 calculateStats();
             }
+        }
+
+        function goToTodo() {
+            window.location.href = 'https://bryancode.github.io/Finance-Tracker/to-do.html'
         }
 
         async function init() {
