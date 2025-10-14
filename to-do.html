@@ -54,7 +54,6 @@
             padding: 15px;
         }
 
-        /* NAVBAR REPOSICIONADA */
         .top-navbar {
             background: var(--bg-card);
             padding: 12px 20px;
@@ -114,7 +113,6 @@
             color: var(--color1);
         }
 
-        /* DASHBOARD */
         .dashboard {
             background: var(--bg-card);
             border-radius: 24px;
@@ -220,7 +218,91 @@
             letter-spacing: 0.5px;
         }
 
-        /* FORMULÁRIO */
+        .category-filters {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 10px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Georama', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .filter-btn.active {
+            border-width: 2px;
+            font-weight: 700;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .filter-btn.Paternidade {
+            border-color: #ff6b6b;
+        }
+
+        .filter-btn.Paternidade.active {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            border-color: #ff6b6b;
+            color: white;
+        }
+
+        .filter-btn.Pessoal {
+            border-color: #4ecdc4;
+        }
+
+        .filter-btn.Pessoal.active {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a8a0 100%);
+            border-color: #4ecdc4;
+            color: white;
+        }
+
+        .filter-btn.Trabalho {
+            border-color: #ffd93d;
+        }
+
+        .filter-btn.Trabalho.active {
+            background: linear-gradient(135deg, #ffd93d 0%, #f6c744 100%);
+            border-color: #ffd93d;
+            color: #2d3748;
+        }
+
         .add-task-form {
             background: var(--bg-card);
             border-radius: 20px;
@@ -312,7 +394,6 @@
             background: linear-gradient(135deg, var(--color4) 0%, var(--color5) 100%);
         }
 
-        /* TASKS */
         .section-title {
             color: var(--text-primary);
             font-size: 20px;
@@ -506,7 +587,6 @@
             opacity: 0.8;
         }
 
-        /* BOTÕES FLUTUANTES */
         .fab-container {
             position: fixed;
             bottom: 20px;
@@ -562,7 +642,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- DASHBOARD -->
         <div class="dashboard">
             <div class="dashboard-top">
                 <div class="dashboard-section">
@@ -591,7 +670,6 @@
             </div>
         </div>
 
-        <!-- NAVBAR REPOSICIONADA -->
         <div class="top-navbar">
             <div class="nav-item active" data-tab="hoje" onclick="switchTab('hoje')">
                 <div class="nav-icon">📋</div>
@@ -607,7 +685,27 @@
             </div>
         </div>
 
-        <!-- FORMULÁRIO -->
+        <div class="category-filters">
+            <div class="filter-title">
+                <i class="fas fa-filter"></i>
+                Filtrar por categoria
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn all active" onclick="filterByCategory('all')">
+                    Todas
+                </button>
+                <button class="filter-btn Paternidade" onclick="filterByCategory('Paternidade')">
+                    👶 Paternidade
+                </button>
+                <button class="filter-btn Pessoal" onclick="filterByCategory('Pessoal')">
+                    👤 Pessoal
+                </button>
+                <button class="filter-btn Trabalho" onclick="filterByCategory('Trabalho')">
+                    💼 Trabalho
+                </button>
+            </div>
+        </div>
+
         <div class="add-task-form">
             <h3>Nova Tarefa</h3>
             <div class="form-group">
@@ -638,7 +736,6 @@
         <div class="tasks-container" id="tab-pendentes"></div>
     </div>
 
-    <!-- BOTÕES FLUTUANTES -->
     <div class="fab-container">
         <button class="theme-toggle-fab" onclick="toggleTheme()">
             <i class="fas fa-moon" id="themeIcon"></i>
@@ -657,6 +754,8 @@
     <script>
         const DB_URL = 'https://satisfaction-survey-25a8f-default-rtdb.firebaseio.com';
         let tasks = {};
+        let currentFilter = 'all';
+        let currentTab = 'hoje';
 
         function toggleForm() {
             const form = document.querySelector('.add-task-form');
@@ -691,7 +790,21 @@
             icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
         }
 
+        function filterByCategory(category) {
+            currentFilter = category;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            event.target.classList.add('active');
+            
+            renderTasks();
+        }
+
         function switchTab(tabName) {
+            currentTab = tabName;
+            
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
             });
@@ -835,6 +948,11 @@
 
             for (let id in tasks) {
                 const task = { ...tasks[id], id };
+                
+                if (currentFilter !== 'all' && task.category !== currentFilter) {
+                    continue;
+                }
+                
                 if (task.status === 'concluida') {
                     tasksConcluidas.push(task);
                 } else if (task.status === 'pendente') {
@@ -862,9 +980,9 @@
             
             if (taskList.length === 0) {
                 const emptyContent = {
-                    'hoje': { icon: 'fa-clipboard-list', title: 'Nenhuma tarefa para hoje', text: 'Clique no + para adicionar' },
-                    'concluida': { icon: 'fa-check-circle', title: 'Nenhuma tarefa concluída', text: 'Complete suas tarefas para vê-las aqui' },
-                    'pendente': { icon: 'fa-clock', title: 'Nenhuma tarefa pendente', text: 'Todas as tarefas estão em dia!' }
+                    'hoje': { icon: 'fa-clipboard-list', title: 'Nenhuma tarefa para hoje', text: currentFilter !== 'all' ? 'Nenhuma tarefa nesta categoria' : 'Clique no + para adicionar' },
+                    'concluida': { icon: 'fa-check-circle', title: 'Nenhuma tarefa concluída', text: currentFilter !== 'all' ? 'Nenhuma tarefa nesta categoria' : 'Complete suas tarefas para vê-las aqui' },
+                    'pendente': { icon: 'fa-clock', title: 'Nenhuma tarefa pendente', text: currentFilter !== 'all' ? 'Nenhuma tarefa nesta categoria' : 'Todas as tarefas estão em dia!' }
                 };
                 
                 const content = emptyContent[type];
