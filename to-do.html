@@ -750,294 +750,478 @@
     </div>
 
     <script>
-        const DB_URL = 'https://satisfaction-survey-25a8f-default-rtdb.firebaseio.com';
-        let tasks = {};
-        let currentFilter = 'all';
-        let currentTab = 'hoje';
+      const DB_URL = 'https://satisfaction-survey-25a8f-default-rtdb.firebaseio.com';
+const USERS_DB_URL = 'https://teste-geocode-7f072-default-rtdb.firebaseio.com'; // Mesmo DB dos usuários
+let currentUser = null;
+let tasks = {};
+let currentFilter = 'all';
+let currentTab = 'hoje';
 
-        function toggleForm() {
-            const form = document.querySelector('.add-task-form');
-            const btn = document.getElementById('addBtn');
-            form.classList.toggle('active');
-            btn.classList.toggle('active');
+// Sistema de Login com LocalStorage (compartilhado entre páginas)
+function saveUserSession(username) {
+    localStorage.setItem('financeTrackerUser', username);
+}
+
+function getUserSession() {
+    return localStorage.getItem('financeTrackerUser');
+}
+
+function clearUserSession() {
+    localStorage.removeItem('financeTrackerUser');
+}
+
+async function login(skipPrompt = false) {
+    let username;
+    
+    // Se skipPrompt é true, tenta recuperar do localStorage
+    if (skipPrompt) {
+        username = getUserSession();
+        if (!username) {
+            return await login(false); // Se não houver sessão, faz login normal
         }
-
-        function goToFinance() {
-            window.location.href = 'https://bryancode.github.io/Finance-Tracker/';
+    } else {
+        username = prompt('Digite seu nome de usuário:');
+        
+        if (!username || username.trim() === '') {
+            alert('Nome de usuário inválido!');
+            return login();
         }
-
-         function goToFit() {
-            window.location.href = 'https://bryancode.github.io/Finance-Tracker/fitness-tracker.html'
-        }
-
-        function toggleTheme() {
-            const html = document.documentElement;
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            const icon = document.getElementById('themeIcon');
-            
-            html.setAttribute('data-theme', newTheme);
-            icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-            localStorage.setItem('theme', newTheme);
-        }
-
-        function loadTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            const icon = document.getElementById('themeIcon');
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-        }
-
-        function filterByCategory(category) {
-            currentFilter = category;
-            
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            event.target.classList.add('active');
-            
-            renderTasks();
-        }
-
-        function switchTab(tabName) {
-            currentTab = tabName;
-            
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            document.querySelectorAll('.tasks-container').forEach(container => {
-                container.classList.remove('active');
-            });
-            
-            document.querySelector(`.nav-item[data-tab="${tabName}"]`).classList.add('active');
-            document.getElementById(`tab-${tabName}`).classList.add('active');
-        }
-
-        function updateDate() {
-            const hoje = new Date();
-            const opcoes = { weekday: 'long', day: 'numeric', month: 'long' };
-            document.getElementById('dateInfo').textContent = hoje.toLocaleDateString('pt-BR', opcoes);
-        }
-
-        function updateStats() {
-            const tasksArray = Object.values(tasks);
-            const hoje = getTodayDate();
-            
-            const activeTasks = tasksArray.filter(t => t.status === 'hoje' && !t.completed).length;
-            const totalTasks = tasksArray.filter(t => t.status === 'hoje').length;
-            const completedTasks = tasksArray.filter(t => t.status === 'concluida').length;
-            const pendingTasks = tasksArray.filter(t => t.status === 'pendente').length;
-            
-            document.getElementById('activeTasks').textContent = activeTasks;
-            document.getElementById('totalTasks').textContent = totalTasks;
-            document.getElementById('completedTasks').textContent = completedTasks;
-            document.getElementById('pendingTasks').textContent = pendingTasks;
-        }
-
-        function getTodayDate() {
-            const hoje = new Date();
-            return hoje.toISOString().split('T')[0];
-        }
-
-        async function loadTasks() {
-            try {
-                const response = await fetch(`${DB_URL}/tasks.json`);
-                const data = await response.json();
-                tasks = data || {};
-                await checkAndMovePendingTasks();
-                renderTasks();
-                updateStats();
-            } catch (error) {
-                console.error('Erro ao carregar tarefas:', error);
+    }
+    
+    const normalizedUsername = username.trim().toLowerCase();
+    
+    try {
+        showLoading();
+        
+        // Verifica se o usuário existe no banco de usuários compartilhado
+        const response = await fetch(`${USERS_DB_URL}/users/${normalizedUsername}.json`);
+        const userData = await response.json();
+        
+        if (userData) {
+            // Se está recuperando sessão, não pede senha
+            if (skipPrompt) {
+                currentUser = normalizedUsername;
+                hideLoading();
+                return true;
             }
-        }
-
-        async function checkAndMovePendingTasks() {
-            const hoje = getTodayDate();
-            let changed = false;
-
-            for (let id in tasks) {
-                const task = tasks[id];
-                if (task.date !== hoje && !task.completed && task.status !== 'pendente') {
-                    task.status = 'pendente';
-                    changed = true;
-                }
-            }
-
-            if (changed) {
-                await saveTasks();
-            }
-        }
-
-        async function saveTasks() {
-            try {
-                await fetch(`${DB_URL}/tasks.json`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(tasks)
-                });
-            } catch (error) {
-                console.error('Erro ao salvar tarefas:', error);
-            }
-        }
-
-        async function addTask() {
-            const taskInput = document.getElementById('taskInput');
-            const categorySelect = document.getElementById('categorySelect');
-            const importantCheck = document.getElementById('importantCheck');
-
-            if (!taskInput.value.trim()) {
-                alert('Digite uma tarefa!');
-                return;
-            }
-
-            const id = Date.now().toString();
-            tasks[id] = {
-                title: taskInput.value.trim(),
-                category: categorySelect.value,
-                important: importantCheck.checked,
-                completed: false,
-                date: getTodayDate(),
-                status: 'hoje'
-            };
-
-            await saveTasks();
-            taskInput.value = '';
-            importantCheck.checked = false;
-            toggleForm();
-            renderTasks();
-            updateStats();
-        }
-
-        async function completeTask(id) {
-            tasks[id].completed = true;
-            tasks[id].status = 'concluida';
-            await saveTasks();
-            renderTasks();
-            updateStats();
-        }
-
-        async function readdTask(id) {
-            tasks[id].date = getTodayDate();
-            tasks[id].status = 'hoje';
-            tasks[id].completed = false;
-            await saveTasks();
-            renderTasks();
-            updateStats();
-        }
-
-        async function deleteTask(id) {
-            if (confirm('Deseja realmente excluir esta tarefa?')) {
-                delete tasks[id];
-                await saveTasks();
-                renderTasks();
-                updateStats();
-            }
-        }
-
-        function renderTasks() {
-            const hoje = getTodayDate();
             
-            const tasksHoje = [];
-            const tasksConcluidas = [];
-            const tasksPendentes = [];
-
-            for (let id in tasks) {
-                const task = { ...tasks[id], id };
+            // Usuário existe - solicita senha
+            const password = prompt('Digite sua senha:');
+            
+            if (password === userData.password) {
+                currentUser = normalizedUsername;
+                saveUserSession(normalizedUsername); // Salva sessão
+                alert(`Bem-vindo de volta, ${userData.displayName || username}!`);
+                hideLoading();
+                return true;
+            } else {
+                alert('Senha incorreta!');
+                hideLoading();
+                return login();
+            }
+        } else {
+            // Se estava tentando recuperar sessão mas usuário não existe mais
+            if (skipPrompt) {
+                clearUserSession();
+                return await login(false);
+            }
+            
+            // Novo usuário - cria conta
+            const createAccount = confirm(`Usuário "${username}" não encontrado. Deseja criar uma nova conta?`);
+            
+            if (createAccount) {
+                const password = prompt('Crie uma senha:');
                 
-                if (currentFilter !== 'all' && task.category !== currentFilter) {
-                    continue;
+                if (!password || password.trim() === '') {
+                    alert('Senha inválida!');
+                    hideLoading();
+                    return login();
                 }
                 
-                if (task.status === 'concluida') {
-                    tasksConcluidas.push(task);
-                } else if (task.status === 'pendente') {
-                    tasksPendentes.push(task);
-                } else {
-                    tasksHoje.push(task);
+                const confirmPassword = prompt('Confirme sua senha:');
+                
+                if (password !== confirmPassword) {
+                    alert('As senhas não coincidem!');
+                    hideLoading();
+                    return login();
                 }
-            }
-
-            const sortTasks = (a, b) => {
-                if (a.important && !b.important) return -1;
-                if (!a.important && b.important) return 1;
-                return 0;
-            };
-
-            tasksHoje.sort(sortTasks);
-
-            renderTaskList('tab-hoje', tasksHoje, 'hoje');
-            renderTaskList('tab-concluidas', tasksConcluidas, 'concluida');
-            renderTaskList('tab-pendentes', tasksPendentes, 'pendente');
-        }
-
-        function renderTaskList(containerId, taskList, type) {
-            const container = document.getElementById(containerId);
-            
-            if (taskList.length === 0) {
-                const emptyContent = {
-                    'hoje': { icon: 'fa-clipboard-list', title: 'Nenhuma tarefa para hoje', text: currentFilter !== 'all' ? 'Nenhuma tarefa nesta categoria' : 'Clique no + para adicionar' },
-                    'concluida': { icon: 'fa-check-circle', title: 'Nenhuma tarefa concluída', text: currentFilter !== 'all' ? 'Nenhuma tarefa nesta categoria' : 'Complete suas tarefas para vê-las aqui' },
-                    'pendente': { icon: 'fa-clock', title: 'Nenhuma tarefa pendente', text: currentFilter !== 'all' ? 'Nenhuma tarefa nesta categoria' : 'Todas as tarefas estão em dia!' }
+                
+                // Cria novo usuário no banco compartilhado
+                const newUser = {
+                    displayName: username,
+                    password: password,
+                    createdAt: new Date().toISOString()
                 };
                 
-                const content = emptyContent[type];
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas ${content.icon}"></i>
-                        <h5>${content.title}</h5>
-                        <p>${content.text}</p>
-                    </div>
-                `;
-                return;
+                await fetch(`${USERS_DB_URL}/users/${normalizedUsername}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newUser)
+                });
+                
+                currentUser = normalizedUsername;
+                saveUserSession(normalizedUsername); // Salva sessão
+                alert(`Conta criada com sucesso! Bem-vindo, ${username}!`);
+                hideLoading();
+                return true;
+            } else {
+                hideLoading();
+                return login();
             }
-
-            const tasksHTML = taskList.map(task => `
-                <div class="task-item ${task.category} ${task.important ? 'important' : ''} ${task.completed ? 'completed' : ''}" style="--task-color: ${task.category === 'Paternidade' ? '#ff6b6b' : task.category === 'Pessoal' ? '#4ecdc4' : '#ffd93d'}">
-                    <div class="task-header">
-                        <span class="task-category ${task.category}">${task.category}</span>
-                    </div>
-                    <div class="task-title ${task.completed ? 'completed' : ''}">
-                        ${task.important ? '<span class="important-badge">⭐</span>' : ''}
-                        ${task.title}
-                    </div>
-                    <div class="task-actions">
-                        ${type === 'hoje' && !task.completed ? `
-                            <button class="btn-action btn-complete" onclick="completeTask('${task.id}')">
-                                <i class="fas fa-check"></i> Concluir
-                            </button>
-                        ` : ''}
-                        ${type === 'pendente' ? `
-                            <button class="btn-action btn-readd" onclick="readdTask('${task.id}')">
-                                <i class="fas fa-plus"></i> Adicionar Hoje
-                            </button>
-                        ` : ''}
-                        <button class="btn-action btn-delete" onclick="deleteTask('${task.id}')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-
-            container.innerHTML = tasksHTML;
         }
-
-        document.getElementById('taskInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                addTask();
-            }
-        });
-
-        loadTheme();
-        updateDate();
-        loadTasks();
+    } catch (error) {
+        console.error('Erro no login:', error);
+        alert('Erro ao fazer login. Tente novamente.');
+        hideLoading();
         
+        // Se estava recuperando sessão e deu erro, limpa e tenta login normal
+        if (skipPrompt) {
+            clearUserSession();
+            return await login(false);
+        }
+        
+        return login();
+    }
+}
+
+function logout() {
+    if (confirm('Deseja realmente sair?')) {
+        clearUserSession(); // Remove a sessão do localStorage
+        currentUser = null;
+        tasks = {};
+        location.reload();
+    }
+}
+
+function showLoading() {
+    // Adicione aqui a lógica do seu loading overlay se existir
+    const loadingEl = document.getElementById('loadingOverlay');
+    if (loadingEl) {
+        loadingEl.style.display = 'flex';
+    }
+}
+
+function hideLoading() {
+    // Adicione aqui a lógica do seu loading overlay se existir
+    const loadingEl = document.getElementById('loadingOverlay');
+    if (loadingEl) {
+        loadingEl.style.display = 'none';
+    }
+}
+
+function toggleForm() {
+    const form = document.querySelector('.add-task-form');
+    const btn = document.getElementById('addBtn');
+    form.classList.toggle('active');
+    btn.classList.toggle('active');
+}
+
+function goToFinance() {
+    window.location.href = 'https://bryancode.github.io/Finance-Tracker/';
+}
+
+function goToFit() {
+    window.location.href = 'https://bryancode.github.io/Finance-Tracker/fitness-tracker.html'
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const currentTheme = html.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    const icon = document.getElementById('themeIcon');
+    
+    html.setAttribute('data-theme', newTheme);
+    icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    localStorage.setItem('theme', newTheme);
+}
+
+function loadTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    const icon = document.getElementById('themeIcon');
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+}
+
+function filterByCategory(category) {
+    currentFilter = category;
+    
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    event.target.classList.add('active');
+    
+    renderTasks();
+}
+
+function switchTab(tabName) {
+    currentTab = tabName;
+    
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    document.querySelectorAll('.tasks-container').forEach(container => {
+        container.classList.remove('active');
+    });
+    
+    document.querySelector(`.nav-item[data-tab="${tabName}"]`).classList.add('active');
+    document.getElementById(`tab-${tabName}`).classList.add('active');
+}
+
+function updateDate() {
+    const hoje = new Date();
+    const opcoes = { weekday: 'long', day: 'numeric', month: 'long' };
+    document.getElementById('dateInfo').textContent = hoje.toLocaleDateString('pt-BR', opcoes);
+}
+
+function updateStats() {
+    const tasksArray = Object.values(tasks);
+    const hoje = getTodayDate();
+    
+    const activeTasks = tasksArray.filter(t => t.status === 'hoje' && !t.completed).length;
+    const totalTasks = tasksArray.filter(t => t.status === 'hoje').length;
+    const completedTasks = tasksArray.filter(t => t.status === 'concluida').length;
+    const pendingTasks = tasksArray.filter(t => t.status === 'pendente').length;
+    
+    document.getElementById('activeTasks').textContent = activeTasks;
+    document.getElementById('totalTasks').textContent = totalTasks;
+    document.getElementById('completedTasks').textContent = completedTasks;
+    document.getElementById('pendingTasks').textContent = pendingTasks;
+}
+
+function getTodayDate() {
+    const hoje = new Date();
+    return hoje.toISOString().split('T')[0];
+}
+
+async function loadTasks() {
+    if (!currentUser) return;
+    
+    try {
+        showLoading();
+        const response = await fetch(`${DB_URL}/users/${currentUser}/tasks.json`);
+        const data = await response.json();
+        tasks = data || {};
+        await checkAndMovePendingTasks();
+        renderTasks();
+        updateStats();
+        hideLoading();
+    } catch (error) {
+        console.error('Erro ao carregar tarefas:', error);
+        hideLoading();
+    }
+}
+
+async function checkAndMovePendingTasks() {
+    const hoje = getTodayDate();
+    let changed = false;
+
+    for (let id in tasks) {
+        const task = tasks[id];
+        if (task.date !== hoje && !task.completed && task.status !== 'pendente') {
+            task.status = 'pendente';
+            changed = true;
+        }
+    }
+
+    if (changed) {
+        await saveTasks();
+    }
+}
+
+async function saveTasks() {
+    if (!currentUser) return;
+    
+    try {
+        showLoading();
+        await fetch(`${DB_URL}/users/${currentUser}/tasks.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(tasks)
+        });
+        hideLoading();
+    } catch (error) {
+        console.error('Erro ao salvar tarefas:', error);
+        hideLoading();
+    }
+}
+
+async function addTask() {
+    const taskInput = document.getElementById('taskInput');
+    const categorySelect = document.getElementById('categorySelect');
+    const importantCheck = document.getElementById('importantCheck');
+
+    if (!taskInput.value.trim()) {
+        alert('Digite uma tarefa!');
+        return;
+    }
+
+    const id = Date.now().toString();
+    tasks[id] = {
+        title: taskInput.value.trim(),
+        category: categorySelect.value,
+        important: importantCheck.checked,
+        completed: false,
+        date: getTodayDate(),
+        status: 'hoje'
+    };
+
+    await saveTasks();
+    taskInput.value = '';
+    importantCheck.checked = false;
+    toggleForm();
+    renderTasks();
+    updateStats();
+}
+
+async function completeTask(id) {
+    tasks[id].completed = true;
+    tasks[id].status = 'concluida';
+    await saveTasks();
+    renderTasks();
+    updateStats();
+}
+
+async function readdTask(id) {
+    tasks[id].date = getTodayDate();
+    tasks[id].status = 'hoje';
+    tasks[id].completed = false;
+    await saveTasks();
+    renderTasks();
+    updateStats();
+}
+
+async function deleteTask(id) {
+    if (confirm('Deseja realmente excluir esta tarefa?')) {
+        delete tasks[id];
+        await saveTasks();
+        renderTasks();
+        updateStats();
+    }
+}
+
+function renderTasks() {
+    const hoje = getTodayDate();
+    
+    const tasksHoje = [];
+    const tasksConcluidas = [];
+    const tasksPendentes = [];
+
+    for (let id in tasks) {
+        const task = { ...tasks[id], id };
+        
+        if (currentFilter !== 'all' && task.category !== currentFilter) {
+            continue;
+        }
+        
+        if (task.status === 'concluida') {
+            tasksConcluidas.push(task);
+        } else if (task.status === 'pendente') {
+            tasksPendentes.push(task);
+        } else {
+            tasksHoje.push(task);
+        }
+    }
+
+    const sortTasks = (a, b) => {
+        if (a.important && !b.important) return -1;
+        if (!a.important && b.important) return 1;
+        return 0;
+    };
+
+    tasksHoje.sort(sortTasks);
+
+    renderTaskList('tab-hoje', tasksHoje, 'hoje');
+    renderTaskList('tab-concluidas', tasksConcluidas, 'concluida');
+    renderTaskList('tab-pendentes', tasksPendentes, 'pendente');
+}
+
+function renderTaskList(containerId, taskList, type) {
+    const container = document.getElementById(containerId);
+    
+    if (taskList.length === 0) {
+        const emptyContent = {
+            'hoje': { icon: 'fa-clipboard-list', title: 'Nenhuma tarefa para hoje', text: currentFilter !== 'all' ? 'Nenhuma tarefa nesta categoria' : 'Clique no + para adicionar' },
+            'concluida': { icon: 'fa-check-circle', title: 'Nenhuma tarefa concluída', text: currentFilter !== 'all' ? 'Nenhuma tarefa nesta categoria' : 'Complete suas tarefas para vê-las aqui' },
+            'pendente': { icon: 'fa-clock', title: 'Nenhuma tarefa pendente', text: currentFilter !== 'all' ? 'Nenhuma tarefa nesta categoria' : 'Todas as tarefas estão em dia!' }
+        };
+        
+        const content = emptyContent[type];
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas ${content.icon}"></i>
+                <h5>${content.title}</h5>
+                <p>${content.text}</p>
+            </div>
+        `;
+        return;
+    }
+
+    const tasksHTML = taskList.map(task => `
+        <div class="task-item ${task.category} ${task.important ? 'important' : ''} ${task.completed ? 'completed' : ''}" style="--task-color: ${task.category === 'Paternidade' ? '#ff6b6b' : task.category === 'Pessoal' ? '#4ecdc4' : '#ffd93d'}">
+            <div class="task-header">
+                <span class="task-category ${task.category}">${task.category}</span>
+            </div>
+            <div class="task-title ${task.completed ? 'completed' : ''}">
+                ${task.important ? '<span class="important-badge">⭐</span>' : ''}
+                ${task.title}
+            </div>
+            <div class="task-actions">
+                ${type === 'hoje' && !task.completed ? `
+                    <button class="btn-action btn-complete" onclick="completeTask('${task.id}')">
+                        <i class="fas fa-check"></i> Concluir
+                    </button>
+                ` : ''}
+                ${type === 'pendente' ? `
+                    <button class="btn-action btn-readd" onclick="readdTask('${task.id}')">
+                        <i class="fas fa-plus"></i> Adicionar Hoje
+                    </button>
+                ` : ''}
+                <button class="btn-action btn-delete" onclick="deleteTask('${task.id}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+
+    container.innerHTML = tasksHTML;
+}
+
+document.getElementById('taskInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        addTask();
+    }
+});
+
+async function init() {
+    loadTheme();
+    updateDate();
+    
+    // Tenta recuperar sessão salva
+    const savedUser = getUserSession();
+    let loggedIn = false;
+    
+    if (savedUser) {
+        // Se há sessão salva, faz login automático (sem prompt)
+        loggedIn = await login(true);
+    } else {
+        // Se não há sessão, executa o login normal
+        loggedIn = await login(false);
+    }
+    
+    if (loggedIn) {
+        await loadTasks();
+        
+        // Atualiza a cada minuto
         setInterval(() => {
             updateDate();
             checkAndMovePendingTasks();
         }, 60000);
+    }
+}
+
+init();
     </script>
 </body>
 </html>

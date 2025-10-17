@@ -829,28 +829,15 @@
         <button class="theme-toggle-fab" onclick="toggleTheme()">
             <i class="fas fa-moon" id="themeIcon"></i>
         </button>
-        <button class="theme-toggle-fab" onclick="goToFTracker()">
-            <i class="fa-solid fa-dollar-sign"></i>
-        </button>
-        <button class="theme-toggle-fab" onclick="goToTasks()">
-            <i class="fa-solid fa-list"></i>
-        </button>
         <button class="fab" onclick="toggleForm()" id="addBtn">
             <i class="fas fa-plus"></i>
         </button>
     </div>
 
     <script>
-
-        function goToFTracker() {
-            window.location.href = 'https://bryancode.github.io/Finance-Tracker/'
-        }
-
-        function goToTasks() {
-              window.location.href = 'https://bryancode.github.io/Finance-Tracker/to-do.html'
-        }
-
 const DB_URL = 'https://lawme-da3af-default-rtdb.firebaseio.com';
+const USERS_DB_URL = 'https://teste-geocode-7f072-default-rtdb.firebaseio.com'; // Mesmo DB dos usuários
+let currentUser = null;
 let workouts = {};
 let profile = {};
 let currentTab = 'segunda';
@@ -889,6 +876,149 @@ const dayMapping = {
     4: 'sexta',
     5: 'coringa'
 };
+
+// Sistema de Login com LocalStorage (compartilhado entre páginas)
+function saveUserSession(username) {
+    localStorage.setItem('financeTrackerUser', username);
+}
+
+function getUserSession() {
+    return localStorage.getItem('financeTrackerUser');
+}
+
+function clearUserSession() {
+    localStorage.removeItem('financeTrackerUser');
+}
+
+async function login(skipPrompt = false) {
+    let username;
+    
+    if (skipPrompt) {
+        username = getUserSession();
+        if (!username) {
+            return await login(false);
+        }
+    } else {
+        username = prompt('Digite seu nome de usuário:');
+        
+        if (!username || username.trim() === '') {
+            alert('Nome de usuário inválido!');
+            return login();
+        }
+    }
+    
+    const normalizedUsername = username.trim().toLowerCase();
+    
+    try {
+        showLoading();
+        
+        const response = await fetch(`${USERS_DB_URL}/users/${normalizedUsername}.json`);
+        const userData = await response.json();
+        
+        if (userData) {
+            if (skipPrompt) {
+                currentUser = normalizedUsername;
+                hideLoading();
+                return true;
+            }
+            
+            const password = prompt('Digite sua senha:');
+            
+            if (password === userData.password) {
+                currentUser = normalizedUsername;
+                saveUserSession(normalizedUsername);
+                alert(`Bem-vindo de volta, ${userData.displayName || username}!`);
+                hideLoading();
+                return true;
+            } else {
+                alert('Senha incorreta!');
+                hideLoading();
+                return login();
+            }
+        } else {
+            if (skipPrompt) {
+                clearUserSession();
+                return await login(false);
+            }
+            
+            const createAccount = confirm(`Usuário "${username}" não encontrado. Deseja criar uma nova conta?`);
+            
+            if (createAccount) {
+                const password = prompt('Crie uma senha:');
+                
+                if (!password || password.trim() === '') {
+                    alert('Senha inválida!');
+                    hideLoading();
+                    return login();
+                }
+                
+                const confirmPassword = prompt('Confirme sua senha:');
+                
+                if (password !== confirmPassword) {
+                    alert('As senhas não coincidem!');
+                    hideLoading();
+                    return login();
+                }
+                
+                const newUser = {
+                    displayName: username,
+                    password: password,
+                    createdAt: new Date().toISOString()
+                };
+                
+                await fetch(`${USERS_DB_URL}/users/${normalizedUsername}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newUser)
+                });
+                
+                currentUser = normalizedUsername;
+                saveUserSession(normalizedUsername);
+                alert(`Conta criada com sucesso! Bem-vindo, ${username}!`);
+                hideLoading();
+                return true;
+            } else {
+                hideLoading();
+                return login();
+            }
+        }
+    } catch (error) {
+        console.error('Erro no login:', error);
+        alert('Erro ao fazer login. Tente novamente.');
+        hideLoading();
+        
+        if (skipPrompt) {
+            clearUserSession();
+            return await login(false);
+        }
+        
+        return login();
+    }
+}
+
+function logout() {
+    if (confirm('Deseja realmente sair?')) {
+        clearUserSession();
+        currentUser = null;
+        workouts = {};
+        profile = {};
+        location.reload();
+    }
+}
+
+function showLoading() {
+    const loadingEl = document.getElementById('loadingOverlay');
+    if (loadingEl) {
+        loadingEl.style.display = 'flex';
+    }
+}
+
+function hideLoading() {
+    const loadingEl = document.getElementById('loadingOverlay');
+    if (loadingEl) {
+        loadingEl.style.display = 'none';
+    }
+}
 
 // Chronometer Functions
 function startChrono() {
@@ -929,14 +1059,14 @@ function updateChronoDisplay() {
 // Load completed exercises from memory
 function loadCompletedExercises() {
     const today = new Date().toDateString();
-    const savedKey = `completed_${currentTab}_${today}`;
+    const savedKey = `completed_${currentUser}_${currentTab}_${today}`;
     const saved = localStorage.getItem(savedKey);
     completedExercises[currentTab] = saved ? JSON.parse(saved) : {};
 }
 
 function saveCompletedExercises() {
     const today = new Date().toDateString();
-    const savedKey = `completed_${currentTab}_${today}`;
+    const savedKey = `completed_${currentUser}_${currentTab}_${today}`;
     localStorage.setItem(savedKey, JSON.stringify(completedExercises[currentTab] || {}));
     updateProgress();
 }
@@ -1076,10 +1206,14 @@ function convertToFirebaseFormat(internalWorkouts) {
 }
 
 async function loadData() {
+    if (!currentUser) return;
+    
     try {
+        showLoading();
+        
         const [workoutsRes, profileRes] = await Promise.all([
-            fetch(`${DB_URL}/workouts.json`),
-            fetch(`${DB_URL}/profile.json`)
+            fetch(`${DB_URL}/users/${currentUser}/workouts.json`),
+            fetch(`${DB_URL}/users/${currentUser}/profile.json`)
         ]);
         
         const firebaseWorkouts = await workoutsRes.json();
@@ -1097,8 +1231,10 @@ async function loadData() {
         renderProfile();
         loadCompletedExercises();
         updateProgress();
+        hideLoading();
     } catch (error) {
         console.error('Erro ao carregar dados:', error);
+        hideLoading();
     }
 }
 
@@ -1172,20 +1308,27 @@ async function deleteExercise(day, id) {
 }
 
 async function saveWorkouts() {
+    if (!currentUser) return;
+    
     try {
+        showLoading();
         const firebaseFormat = convertToFirebaseFormat(workouts);
         
-        await fetch(`${DB_URL}/workouts.json`, {
+        await fetch(`${DB_URL}/users/${currentUser}/workouts.json`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(firebaseFormat)
         });
+        hideLoading();
     } catch (error) {
         console.error('Erro ao salvar treinos:', error);
+        hideLoading();
     }
 }
 
 async function saveProfile() {
+    if (!currentUser) return;
+    
     const name = document.getElementById('profileName').value.trim();
     const birth = document.getElementById('profileBirth').value;
     const weight = document.getElementById('profileWeight').value;
@@ -1205,7 +1348,8 @@ async function saveProfile() {
     };
 
     try {
-        await fetch(`${DB_URL}/profile.json`, {
+        showLoading();
+        await fetch(`${DB_URL}/users/${currentUser}/profile.json`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(profileData)
@@ -1215,8 +1359,10 @@ async function saveProfile() {
         toggleForm();
         renderProfile();
         updateStats();
+        hideLoading();
     } catch (error) {
         console.error('Erro ao salvar perfil:', error);
+        hideLoading();
     }
 }
 
@@ -1342,8 +1488,24 @@ function renderAllDays() {
     days.forEach(day => renderDay(day));
 }
 
-loadTheme();
-loadData();
+async function init() {
+    loadTheme();
+    
+    const savedUser = getUserSession();
+    let loggedIn = false;
+    
+    if (savedUser) {
+        loggedIn = await login(true);
+    } else {
+        loggedIn = await login(false);
+    }
+    
+    if (loggedIn) {
+        await loadData();
+    }
+}
+
+init();
     </script>
 
 </body>
