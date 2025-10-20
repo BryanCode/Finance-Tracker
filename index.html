@@ -673,6 +673,9 @@
         <button class="theme-toggle-fab" onclick="goToTodo()">
             <i class="fa-solid fa-list"></i>
         </button>
+        <button class="theme-toggle-fab" onclick="goToFit()">
+            <i class="fa-solid fa-dumbbell"></i>
+        </button>
         <button class="fab" onclick="showAddAssetModal()">
             <i class="fas fa-plus"></i>
         </button>
@@ -763,6 +766,10 @@ const COLORS = [
 // Sistema de Login com LocalStorage
 function saveUserSession(username) {
     localStorage.setItem('financeTrackerUser', username);
+}
+
+function goToFit() {
+    window.location.href = 'https://bryancode.github.io/Finance-Tracker/fitness-tracker.html'
 }
 
 function getUserSession() {

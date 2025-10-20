@@ -738,6 +738,7 @@
         <button class="theme-toggle-fab" onclick="toggleTheme()">
             <i class="fas fa-moon" id="themeIcon"></i>
         </button>
+       
          <button class="theme-toggle-fab" onclick="goToFit()">
             <i class="fa-solid fa-dumbbell"></i>
         </button>
@@ -761,6 +762,8 @@ let currentTab = 'hoje';
 function saveUserSession(username) {
     localStorage.setItem('financeTrackerUser', username);
 }
+
+
 
 function getUserSession() {
     return localStorage.getItem('financeTrackerUser');

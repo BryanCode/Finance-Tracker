@@ -829,12 +829,27 @@
         <button class="theme-toggle-fab" onclick="toggleTheme()">
             <i class="fas fa-moon" id="themeIcon"></i>
         </button>
+           <button class="theme-toggle-fab" onclick="goToTodo()">
+            <i class="fa-solid fa-list"></i>
+        </button>
+        <button class="theme-toggle-fab" onclick="goToFinance()">
+            <i class="fas fa-dollar-sign"></i>
+        </button>
         <button class="fab" onclick="toggleForm()" id="addBtn">
             <i class="fas fa-plus"></i>
         </button>
     </div>
 
     <script>
+
+        function goToFinance() {
+    window.location.href = 'https://bryancode.github.io/Finance-Tracker/';
+}
+
+
+        function goToTodo() {
+    window.location.href = 'https://bryancode.github.io/Finance-Tracker/to-do.html'
+}
 const DB_URL = 'https://lawme-da3af-default-rtdb.firebaseio.com';
 const USERS_DB_URL = 'https://teste-geocode-7f072-default-rtdb.firebaseio.com'; // Mesmo DB dos usuários
 let currentUser = null;
