@@ -804,6 +804,35 @@
             background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             color: white;
         }
+        
+        .btn-clear-expenses {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Georama', sans-serif;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .btn-clear-expenses:hover {
+            background: #fde68a;
+        }
+
+        .btn-clear-expenses:active {
+            transform: scale(0.95);
+        }
+
+        [data-theme="dark"] .btn-clear-expenses {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
     </style>
 </head>
 <body>
@@ -991,6 +1020,30 @@ function saveUserSession(username) {
 
 function goToFit() {
     window.location.href = 'https://bryancode.github.io/Finance-Tracker/fitness-tracker.html'
+}
+
+async function clearAssetExpenses(assetId) {
+    const asset = assets.find(a => a.id === assetId);
+    const assetExpenses = expenses.filter(e => e.assetId === assetId);
+    
+    if (assetExpenses.length === 0) {
+        alert('Este ativo não possui despesas para limpar.');
+        return;
+    }
+    
+    const paidCount = assetExpenses.filter(e => e.paid).length;
+    const pendingCount = assetExpenses.filter(e => !e.paid).length;
+    
+    const message = `Limpar todas as despesas de "${asset.name}"?\n\n` +
+                    `${paidCount} quitada(s)\n${pendingCount} pendente(s)\n\n` +
+                    `Esta ação não pode ser desfeita.`;
+    
+    if (confirm(message)) {
+        expenses = expenses.filter(e => e.assetId !== assetId);
+        await saveData();
+        renderAssets();
+        alert('Despesas removidas com sucesso!');
+    }
 }
 
 function getUserSession() {
@@ -1368,29 +1421,34 @@ function renderAssets() {
 
     container.innerHTML = assets.map((asset, index) => {
         const assetExpenses = getAssetExpenses(asset.id);
-        const expensesHtml = assetExpenses.length > 0 ? assetExpenses.map(expense => `
-            <div class="expense-card ${expense.paid ? 'paid' : ''}">
-                <div class="expense-header">
-                    <div class="expense-info">
-                        <div class="expense-description">${expense.description}</div>
-                        <div class="expense-asset-link">
-                            <i class="fas fa-link"></i> ${asset.name}
-                        </div>
+        const expensesHtml = assetExpenses.length > 0 ? `
+    ${assetExpenses.map(expense => `
+        <div class="expense-card ${expense.paid ? 'paid' : ''}">
+            <div class="expense-header">
+                <div class="expense-info">
+                    <div class="expense-description">${expense.description}</div>
+                    <div class="expense-asset-link">
+                        <i class="fas fa-link"></i> ${asset.name}
                     </div>
-                    <div class="expense-value">${formatCurrency(expense.value)}</div>
                 </div>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span class="expense-status ${expense.paid ? 'paid' : 'pending'}">
-                        ${expense.paid ? 'Quitada' : 'Pendente'}
-                    </span>
-                    ${!expense.paid ? `
-                        <button class="btn-pay" onclick="showPayExpenseModal('${expense.id}')">
-                            <i class="fas fa-check"></i> Quitar
-                        </button>
-                    ` : ''}
-                </div>
+                <div class="expense-value">${formatCurrency(expense.value)}</div>
             </div>
-        `).join('') : '';
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="expense-status ${expense.paid ? 'paid' : 'pending'}">
+                    ${expense.paid ? 'Quitada' : 'Pendente'}
+                </span>
+                ${!expense.paid ? `
+                    <button class="btn-pay" onclick="showPayExpenseModal('${expense.id}')">
+                        <i class="fas fa-check"></i> Quitar
+                    </button>
+                ` : ''}
+            </div>
+        </div>
+    `).join('')}
+    <button class="btn-clear-expenses" onclick="clearAssetExpenses('${asset.id}')">
+        <i class="fas fa-broom"></i> Limpar Despesas (${assetExpenses.length})
+    </button>
+` : '';
 
         return `
             <div class="asset-card" draggable="true" data-index="${index}" data-id="${asset.id}" style="--asset-color: ${asset.color || '#4f46e5'}; border-left-color: ${asset.color || '#4f46e5'}">
