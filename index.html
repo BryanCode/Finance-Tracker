@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Georama:wght@300;400;600;700&display=swap" rel="stylesheet">
-      <style>
+    <style>
         :root {
             --color1: #b1b2e2;
             --color2: #9193c1;
@@ -23,7 +24,7 @@
 
             --color1rgba: #b1b2e289;
             --color2rgba: #9193c176;
-            
+
             --bg-primary: linear-gradient(135deg, var(--color2) 0%, var(--color4) 100%);
             --bg-card: #ffffff;
             --text-primary: var(--color5);
@@ -67,7 +68,8 @@
             z-index: 1000;
         }
 
-        .fab, .theme-toggle-fab {
+        .fab,
+        .theme-toggle-fab {
             width: 60px;
             height: 60px;
             border-radius: 50%;
@@ -102,7 +104,8 @@
             color: var(--color1);
         }
 
-        .fab:active, .theme-toggle-fab:active {
+        .fab:active,
+        .theme-toggle-fab:active {
             transform: scale(0.9);
         }
 
@@ -196,7 +199,7 @@
             overflow: hidden;
             display: flex;
             background: var(--border-color);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .distribution-segment {
@@ -209,7 +212,7 @@
             color: white;
             font-weight: 700;
             font-size: 13px;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
             min-width: 30px;
         }
 
@@ -306,7 +309,8 @@
             color: #ffffff;
         }
 
-        .empty-favorites, .empty-distribution {
+        .empty-favorites,
+        .empty-distribution {
             text-align: center;
             padding: 25px;
             color: var(--text-secondary);
@@ -665,7 +669,8 @@
             margin-bottom: 8px;
         }
 
-        .form-control, .form-select {
+        .form-control,
+        .form-select {
             border-radius: 14px;
             border: 2px solid var(--border-color);
             padding: 14px;
@@ -675,7 +680,8 @@
             color: var(--text-primary);
         }
 
-        .form-control:focus, .form-select:focus {
+        .form-control:focus,
+        .form-select:focus {
             border-color: var(--color3);
             box-shadow: 0 0 0 3px rgba(113, 116, 159, 0.2);
             background: var(--bg-card);
@@ -804,7 +810,7 @@
             background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             color: white;
         }
-        
+
         .btn-clear-expenses {
             background: #fef3c7;
             color: #92400e;
@@ -835,6 +841,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -902,11 +909,13 @@
                         <input type="hidden" id="editAssetId">
                         <div class="mb-3">
                             <label class="form-label">Nome</label>
-                            <input type="text" class="form-control" id="assetName" required placeholder="Ex: Cartão de Crédito">
+                            <input type="text" class="form-control" id="assetName" required
+                                placeholder="Ex: Cartão de Crédito">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Valor Total</label>
-                            <input type="number" step="0.01" class="form-control" id="assetValue" required placeholder="0.00">
+                            <input type="number" step="0.01" class="form-control" id="assetValue" required
+                                placeholder="0.00">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Cor do Ativo</label>
@@ -914,7 +923,8 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Descrição</label>
-                            <textarea class="form-control" id="assetDesc" rows="2" placeholder="Informações adicionais (opcional)"></textarea>
+                            <textarea class="form-control" id="assetDesc" rows="2"
+                                placeholder="Informações adicionais (opcional)"></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary" id="assetSubmitBtn">Adicionar Ativo</button>
                     </form>
@@ -937,7 +947,8 @@
                         <input type="hidden" id="transactionType">
                         <div class="mb-3">
                             <label class="form-label">Valor</label>
-                            <input type="number" step="0.01" class="form-control" id="transactionValue" required placeholder="0.00">
+                            <input type="number" step="0.01" class="form-control" id="transactionValue" required
+                                placeholder="0.00">
                         </div>
                         <button type="submit" class="btn btn-primary">Confirmar</button>
                     </form>
@@ -958,11 +969,13 @@
                     <form id="expenseForm">
                         <div class="mb-3">
                             <label class="form-label">Descrição</label>
-                            <input type="text" class="form-control" id="expenseDescription" required placeholder="Ex: Conta de luz">
+                            <input type="text" class="form-control" id="expenseDescription" required
+                                placeholder="Ex: Conta de luz">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Valor</label>
-                            <input type="number" step="0.01" class="form-control" id="expenseValue" required placeholder="0.00">
+                            <input type="number" step="0.01" class="form-control" id="expenseValue" required
+                                placeholder="0.00">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Ativo Vinculado</label>
@@ -987,7 +1000,8 @@
                 </div>
                 <div class="modal-body">
                     <div id="paymentSummary"></div>
-                    <button type="button" class="btn btn-primary" onclick="confirmPayment()">Confirmar Pagamento</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmPayment()">Confirmar
+                        Pagamento</button>
                 </div>
             </div>
         </div>
@@ -995,351 +1009,351 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
-const FIREBASE_URL = 'https://teste-geocode-7f072-default-rtdb.firebaseio.com';
-let currentUser = null;
-let assets = [];
-let transactions = [];
-let favorites = [];
-let expenses = [];
-let selectedColor = '#4f46e5';
-let editingAssetId = null;
-let payingExpenseId = null;
+        const FIREBASE_URL = 'https://teste-geocode-7f072-default-rtdb.firebaseio.com';
+        let currentUser = null;
+        let assets = [];
+        let transactions = [];
+        let favorites = [];
+        let expenses = [];
+        let selectedColor = '#4f46e5';
+        let editingAssetId = null;
+        let payingExpenseId = null;
 
-const COLORS = [
-    '#00BCFF', '#E80537', '#820AD1', '#3b82f6', 
-    '#8b5cf6', '#ec4899', '#14b8a6', '#f97316',
-    '#6366f1', '#84cc16', '#06b6d4', '#a855f7',
-    '#22c55e', '#eab308', '#0ea5e9', '#d946ef',
-    '#64748b', '#78716c'
-];
+        const COLORS = [
+            '#00BCFF', '#E80537', '#820AD1', '#3b82f6',
+            '#8b5cf6', '#ec4899', '#14b8a6', '#f97316',
+            '#6366f1', '#84cc16', '#06b6d4', '#a855f7',
+            '#22c55e', '#eab308', '#0ea5e9', '#d946ef',
+            '#64748b', '#78716c'
+        ];
 
-// Sistema de Login com LocalStorage
-function saveUserSession(username) {
-    localStorage.setItem('financeTrackerUser', username);
-}
-
-function goToFit() {
-    window.location.href = 'https://bryancode.github.io/Finance-Tracker/fitness-tracker.html'
-}
-
-async function clearAssetExpenses(assetId) {
-    const asset = assets.find(a => a.id === assetId);
-    const assetExpenses = expenses.filter(e => e.assetId === assetId);
-    
-    if (assetExpenses.length === 0) {
-        alert('Este ativo não possui despesas para limpar.');
-        return;
-    }
-    
-    const paidCount = assetExpenses.filter(e => e.paid).length;
-    const pendingCount = assetExpenses.filter(e => !e.paid).length;
-    
-    const message = `Limpar todas as despesas de "${asset.name}"?\n\n` +
-                    `${paidCount} quitada(s)\n${pendingCount} pendente(s)\n\n` +
-                    `Esta ação não pode ser desfeita.`;
-    
-    if (confirm(message)) {
-        expenses = expenses.filter(e => e.assetId !== assetId);
-        await saveData();
-        renderAssets();
-        alert('Despesas removidas com sucesso!');
-    }
-}
-
-function getUserSession() {
-    return localStorage.getItem('financeTrackerUser');
-}
-
-function clearUserSession() {
-    localStorage.removeItem('financeTrackerUser');
-}
-
-async function login(skipPrompt = false) {
-    let username;
-    
-    if (skipPrompt) {
-        username = getUserSession();
-        if (!username) {
-            return await login(false);
+        // Sistema de Login com LocalStorage
+        function saveUserSession(username) {
+            localStorage.setItem('financeTrackerUser', username);
         }
-    } else {
-        username = prompt('Digite seu nome de usuário:');
-        
-        if (!username || username.trim() === '') {
-            alert('Nome de usuário inválido!');
-            return login();
+
+        function goToFit() {
+            window.location.href = 'https://bryancode.github.io/Finance-Tracker/fitness-tracker.html'
         }
-    }
-    
-    const normalizedUsername = username.trim().toLowerCase();
-    
-    try {
-        showLoading();
-        
-        const response = await fetch(`${FIREBASE_URL}/users/${normalizedUsername}.json`);
-        const userData = await response.json();
-        
-        if (userData) {
-            if (skipPrompt) {
-                currentUser = normalizedUsername;
-                hideLoading();
-                return true;
+
+        async function clearAssetExpenses(assetId) {
+            const asset = assets.find(a => a.id === assetId);
+            const assetExpenses = expenses.filter(e => e.assetId === assetId);
+
+            if (assetExpenses.length === 0) {
+                alert('Este ativo não possui despesas para limpar.');
+                return;
             }
-            
-            const password = prompt('Digite sua senha:');
-            
-            if (password === userData.password) {
-                currentUser = normalizedUsername;
-                saveUserSession(normalizedUsername);
-                alert(`Bem-vindo de volta, ${userData.displayName || username}!`);
-                hideLoading();
-                return true;
+
+            const paidCount = assetExpenses.filter(e => e.paid).length;
+            const pendingCount = assetExpenses.filter(e => !e.paid).length;
+
+            const message = `Limpar todas as despesas de "${asset.name}"?\n\n` +
+                `${paidCount} quitada(s)\n${pendingCount} pendente(s)\n\n` +
+                `Esta ação não pode ser desfeita.`;
+
+            if (confirm(message)) {
+                expenses = expenses.filter(e => e.assetId !== assetId);
+                await saveData();
+                renderAssets();
+                alert('Despesas removidas com sucesso!');
+            }
+        }
+
+        function getUserSession() {
+            return localStorage.getItem('financeTrackerUser');
+        }
+
+        function clearUserSession() {
+            localStorage.removeItem('financeTrackerUser');
+        }
+
+        async function login(skipPrompt = false) {
+            let username;
+
+            if (skipPrompt) {
+                username = getUserSession();
+                if (!username) {
+                    return await login(false);
+                }
             } else {
-                alert('Senha incorreta!');
+                username = prompt('Digite seu nome de usuário:');
+
+                if (!username || username.trim() === '') {
+                    alert('Nome de usuário inválido!');
+                    return login();
+                }
+            }
+
+            const normalizedUsername = username.trim().toLowerCase();
+
+            try {
+                showLoading();
+
+                const response = await fetch(`${FIREBASE_URL}/users/${normalizedUsername}.json`);
+                const userData = await response.json();
+
+                if (userData) {
+                    if (skipPrompt) {
+                        currentUser = normalizedUsername;
+                        hideLoading();
+                        return true;
+                    }
+
+                    const password = prompt('Digite sua senha:');
+
+                    if (password === userData.password) {
+                        currentUser = normalizedUsername;
+                        saveUserSession(normalizedUsername);
+                        alert(`Bem-vindo de volta, ${userData.displayName || username}!`);
+                        hideLoading();
+                        return true;
+                    } else {
+                        alert('Senha incorreta!');
+                        hideLoading();
+                        return login();
+                    }
+                } else {
+                    if (skipPrompt) {
+                        clearUserSession();
+                        return await login(false);
+                    }
+
+                    const createAccount = confirm(`Usuário "${username}" não encontrado. Deseja criar uma nova conta?`);
+
+                    if (createAccount) {
+                        const password = prompt('Crie uma senha:');
+
+                        if (!password || password.trim() === '') {
+                            alert('Senha inválida!');
+                            hideLoading();
+                            return login();
+                        }
+
+                        const confirmPassword = prompt('Confirme sua senha:');
+
+                        if (password !== confirmPassword) {
+                            alert('As senhas não coincidem!');
+                            hideLoading();
+                            return login();
+                        }
+
+                        const newUser = {
+                            displayName: username,
+                            password: password,
+                            createdAt: new Date().toISOString()
+                        };
+
+                        await fetch(`${FIREBASE_URL}/users/${normalizedUsername}.json`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(newUser)
+                        });
+
+                        currentUser = normalizedUsername;
+                        saveUserSession(normalizedUsername);
+                        alert(`Conta criada com sucesso! Bem-vindo, ${username}!`);
+                        hideLoading();
+                        return true;
+                    } else {
+                        hideLoading();
+                        return login();
+                    }
+                }
+            } catch (error) {
+                console.error('Erro no login:', error);
+                alert('Erro ao fazer login. Tente novamente.');
                 hideLoading();
+
+                if (skipPrompt) {
+                    clearUserSession();
+                    return await login(false);
+                }
+
                 return login();
             }
-        } else {
-            if (skipPrompt) {
+        }
+
+        function logout() {
+            if (confirm('Deseja realmente sair?')) {
                 clearUserSession();
-                return await login(false);
-            }
-            
-            const createAccount = confirm(`Usuário "${username}" não encontrado. Deseja criar uma nova conta?`);
-            
-            if (createAccount) {
-                const password = prompt('Crie uma senha:');
-                
-                if (!password || password.trim() === '') {
-                    alert('Senha inválida!');
-                    hideLoading();
-                    return login();
-                }
-                
-                const confirmPassword = prompt('Confirme sua senha:');
-                
-                if (password !== confirmPassword) {
-                    alert('As senhas não coincidem!');
-                    hideLoading();
-                    return login();
-                }
-                
-                const newUser = {
-                    displayName: username,
-                    password: password,
-                    createdAt: new Date().toISOString()
-                };
-                
-                await fetch(`${FIREBASE_URL}/users/${normalizedUsername}.json`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(newUser)
-                });
-                
-                currentUser = normalizedUsername;
-                saveUserSession(normalizedUsername);
-                alert(`Conta criada com sucesso! Bem-vindo, ${username}!`);
-                hideLoading();
-                return true;
-            } else {
-                hideLoading();
-                return login();
+                currentUser = null;
+                assets = [];
+                transactions = [];
+                favorites = [];
+                expenses = [];
+                location.reload();
             }
         }
-    } catch (error) {
-        console.error('Erro no login:', error);
-        alert('Erro ao fazer login. Tente novamente.');
-        hideLoading();
-        
-        if (skipPrompt) {
-            clearUserSession();
-            return await login(false);
+
+        function updateUserDisplay() {
+            const userDisplay = document.getElementById('currentUser');
+            if (userDisplay && currentUser) {
+                userDisplay.textContent = currentUser;
+            }
         }
-        
-        return login();
-    }
-}
 
-function logout() {
-    if (confirm('Deseja realmente sair?')) {
-        clearUserSession();
-        currentUser = null;
-        assets = [];
-        transactions = [];
-        favorites = [];
-        expenses = [];
-        location.reload();
-    }
-}
-
-function updateUserDisplay() {
-    const userDisplay = document.getElementById('currentUser');
-    if (userDisplay && currentUser) {
-        userDisplay.textContent = currentUser;
-    }
-}
-
-function initColorPicker() {
-    const picker = document.getElementById('colorPicker');
-    picker.innerHTML = COLORS.map(color => `
+        function initColorPicker() {
+            const picker = document.getElementById('colorPicker');
+            picker.innerHTML = COLORS.map(color => `
         <div class="color-option ${color === selectedColor ? 'selected' : ''}" 
              style="background-color: ${color}"
              onclick="selectColor('${color}')"></div>
     `).join('');
-}
+        }
 
-function selectColor(color) {
-    selectedColor = color;
-    document.querySelectorAll('.color-option').forEach(el => {
-        el.classList.remove('selected');
-    });
-    event.target.classList.add('selected');
-}
+        function selectColor(color) {
+            selectedColor = color;
+            document.querySelectorAll('.color-option').forEach(el => {
+                el.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+        }
 
-function toggleTheme() {
-    const html = document.documentElement;
-    const currentTheme = html.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    const icon = document.getElementById('themeIcon');
-    
-    html.setAttribute('data-theme', newTheme);
-    icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-    localStorage.setItem('theme', newTheme);
-}
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            const icon = document.getElementById('themeIcon');
 
-function loadTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    const icon = document.getElementById('themeIcon');
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-}
+            html.setAttribute('data-theme', newTheme);
+            icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            localStorage.setItem('theme', newTheme);
+        }
 
-function showLoading() {
-    document.getElementById('loadingOverlay').style.display = 'flex';
-}
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const icon = document.getElementById('themeIcon');
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
 
-function hideLoading() {
-    document.getElementById('loadingOverlay').style.display = 'none';
-}
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
 
-async function loadData() {
-    if (!currentUser) return;
-    
-    try {
-        showLoading();
-        
-        const assetsResponse = await fetch(`${FIREBASE_URL}/users/${currentUser}/assets.json`);
-        const transactionsResponse = await fetch(`${FIREBASE_URL}/users/${currentUser}/transactions.json`);
-        const favoritesResponse = await fetch(`${FIREBASE_URL}/users/${currentUser}/favorites.json`);
-        const expensesResponse = await fetch(`${FIREBASE_URL}/users/${currentUser}/expenses.json`);
-        
-        const assetsData = await assetsResponse.json();
-        const transactionsData = await transactionsResponse.json();
-        const favoritesData = await favoritesResponse.json();
-        const expensesData = await expensesResponse.json();
-        
-        assets = assetsData ? Object.values(assetsData) : [];
-        transactions = transactionsData ? Object.values(transactionsData) : [];
-        favorites = favoritesData || [];
-        expenses = expensesData ? Object.values(expensesData) : [];
-        
-        hideLoading();
-    } catch (error) {
-        console.error('Erro ao carregar dados:', error);
-        hideLoading();
-        alert('Erro ao carregar dados do servidor');
-    }
-}
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
 
-async function saveData() {
-    if (!currentUser) return;
-    
-    try {
-        showLoading();
-        
-        const assetsObj = {};
-        assets.forEach(asset => {
-            assetsObj[asset.id] = asset;
-        });
-        
-        const transactionsObj = {};
-        transactions.forEach(transaction => {
-            transactionsObj[transaction.id] = transaction;
-        });
+        async function loadData() {
+            if (!currentUser) return;
 
-        const expensesObj = {};
-        expenses.forEach(expense => {
-            expensesObj[expense.id] = expense;
-        });
-        
-        await Promise.all([
-            fetch(`${FIREBASE_URL}/users/${currentUser}/assets.json`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(assetsObj)
-            }),
-            fetch(`${FIREBASE_URL}/users/${currentUser}/transactions.json`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(transactionsObj)
-            }),
-            fetch(`${FIREBASE_URL}/users/${currentUser}/favorites.json`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(favorites)
-            }),
-            fetch(`${FIREBASE_URL}/users/${currentUser}/expenses.json`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(expensesObj)
-            })
-        ]);
-        
-        hideLoading();
-    } catch (error) {
-        console.error('Erro ao salvar dados:', error);
-        hideLoading();
-        alert('Erro ao salvar dados no servidor');
-    }
-}
+            try {
+                showLoading();
 
-function formatCurrency(value) {
-    return new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-    }).format(value);
-}
+                const assetsResponse = await fetch(`${FIREBASE_URL}/users/${currentUser}/assets.json`);
+                const transactionsResponse = await fetch(`${FIREBASE_URL}/users/${currentUser}/transactions.json`);
+                const favoritesResponse = await fetch(`${FIREBASE_URL}/users/${currentUser}/favorites.json`);
+                const expensesResponse = await fetch(`${FIREBASE_URL}/users/${currentUser}/expenses.json`);
 
-function calculateStats() {
-    const totalBalance = assets.reduce((sum, asset) => sum + asset.value, 0);
-    document.getElementById('totalBalance').textContent = formatCurrency(totalBalance);
-    document.getElementById('totalAssets').textContent = assets.length;
-}
+                const assetsData = await assetsResponse.json();
+                const transactionsData = await transactionsResponse.json();
+                const favoritesData = await favoritesResponse.json();
+                const expensesData = await expensesResponse.json();
 
-function renderDistribution() {
-    const barContainer = document.getElementById('distributionBar');
-    const legendContainer = document.getElementById('distributionLegend');
-    
-    if (assets.length === 0) {
-        barContainer.innerHTML = '<div class="empty-distribution">Adicione ativos para ver a distribuição</div>';
-        legendContainer.innerHTML = '';
-        return;
-    }
+                assets = assetsData ? Object.values(assetsData) : [];
+                transactions = transactionsData ? Object.values(transactionsData) : [];
+                favorites = favoritesData || [];
+                expenses = expensesData ? Object.values(expensesData) : [];
 
-    const totalValue = assets.reduce((sum, asset) => sum + asset.value, 0);
-    
-    if (totalValue === 0) {
-        barContainer.innerHTML = '<div class="empty-distribution">Ativos sem valor</div>';
-        legendContainer.innerHTML = '';
-        return;
-    }
+                hideLoading();
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                hideLoading();
+                alert('Erro ao carregar dados do servidor');
+            }
+        }
 
-    const assetsWithPercentage = assets.map(asset => ({
-        ...asset,
-        percentage: (asset.value / totalValue) * 100
-    })).sort((a, b) => b.percentage - a.percentage);
+        async function saveData() {
+            if (!currentUser) return;
 
-    barContainer.innerHTML = assetsWithPercentage.map(asset => `
+            try {
+                showLoading();
+
+                const assetsObj = {};
+                assets.forEach(asset => {
+                    assetsObj[asset.id] = asset;
+                });
+
+                const transactionsObj = {};
+                transactions.forEach(transaction => {
+                    transactionsObj[transaction.id] = transaction;
+                });
+
+                const expensesObj = {};
+                expenses.forEach(expense => {
+                    expensesObj[expense.id] = expense;
+                });
+
+                await Promise.all([
+                    fetch(`${FIREBASE_URL}/users/${currentUser}/assets.json`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(assetsObj)
+                    }),
+                    fetch(`${FIREBASE_URL}/users/${currentUser}/transactions.json`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(transactionsObj)
+                    }),
+                    fetch(`${FIREBASE_URL}/users/${currentUser}/favorites.json`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(favorites)
+                    }),
+                    fetch(`${FIREBASE_URL}/users/${currentUser}/expenses.json`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(expensesObj)
+                    })
+                ]);
+
+                hideLoading();
+            } catch (error) {
+                console.error('Erro ao salvar dados:', error);
+                hideLoading();
+                alert('Erro ao salvar dados no servidor');
+            }
+        }
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value);
+        }
+
+        function calculateStats() {
+            const totalBalance = assets.reduce((sum, asset) => sum + asset.value, 0);
+            document.getElementById('totalBalance').textContent = formatCurrency(totalBalance);
+            document.getElementById('totalAssets').textContent = assets.length;
+        }
+
+        function renderDistribution() {
+            const barContainer = document.getElementById('distributionBar');
+            const legendContainer = document.getElementById('distributionLegend');
+
+            if (assets.length === 0) {
+                barContainer.innerHTML = '<div class="empty-distribution">Adicione ativos para ver a distribuição</div>';
+                legendContainer.innerHTML = '';
+                return;
+            }
+
+            const totalValue = assets.reduce((sum, asset) => sum + asset.value, 0);
+
+            if (totalValue === 0) {
+                barContainer.innerHTML = '<div class="empty-distribution">Ativos sem valor</div>';
+                legendContainer.innerHTML = '';
+                return;
+            }
+
+            const assetsWithPercentage = assets.map(asset => ({
+                ...asset,
+                percentage: (asset.value / totalValue) * 100
+            })).sort((a, b) => b.percentage - a.percentage);
+
+            barContainer.innerHTML = assetsWithPercentage.map(asset => `
         <div class="distribution-segment" 
              style="width: ${asset.percentage}%; background-color: ${asset.color || '#4f46e5'}"
              title="${asset.name}: ${asset.percentage.toFixed(1)}%">
@@ -1347,50 +1361,50 @@ function renderDistribution() {
         </div>
     `).join('');
 
-    legendContainer.innerHTML = assetsWithPercentage.map(asset => `
+            legendContainer.innerHTML = assetsWithPercentage.map(asset => `
         <div class="legend-item">
             <div class="legend-color" style="background-color: ${asset.color || '#4f46e5'}"></div>
             <div class="legend-name" title="${asset.name}">${asset.name}</div>
             <div class="legend-percent">${asset.percentage.toFixed(1)}%</div>
         </div>
     `).join('');
-}
-
-function toggleFavorite(assetId) {
-    const index = favorites.indexOf(assetId);
-    
-    if (index > -1) {
-        favorites.splice(index, 1);
-    } else {
-        if (favorites.length >= 3) {
-            alert('Você pode ter no máximo 3 ativos favoritos!');
-            return;
         }
-        favorites.push(assetId);
-    }
-    
-    saveData();
-    renderAssets();
-    renderFavorites();
-}
 
-function renderFavorites() {
-    const container = document.getElementById('favoritesList');
-    
-    if (favorites.length === 0) {
-        container.innerHTML = `
+        function toggleFavorite(assetId) {
+            const index = favorites.indexOf(assetId);
+
+            if (index > -1) {
+                favorites.splice(index, 1);
+            } else {
+                if (favorites.length >= 3) {
+                    alert('Você pode ter no máximo 3 ativos favoritos!');
+                    return;
+                }
+                favorites.push(assetId);
+            }
+
+            saveData();
+            renderAssets();
+            renderFavorites();
+        }
+
+        function renderFavorites() {
+            const container = document.getElementById('favoritesList');
+
+            if (favorites.length === 0) {
+                container.innerHTML = `
             <div class="empty-favorites">
                 Clique na estrela dos ativos para marcá-los como favoritos
             </div>
         `;
-        return;
-    }
+                return;
+            }
 
-    const favoriteAssets = favorites
-        .map(id => assets.find(a => a.id === id))
-        .filter(a => a !== undefined);
+            const favoriteAssets = favorites
+                .map(id => assets.find(a => a.id === id))
+                .filter(a => a !== undefined);
 
-    container.innerHTML = favoriteAssets.map(asset => `
+            container.innerHTML = favoriteAssets.map(asset => `
         <div class="favorite-item">
             <div class="favorite-name">
                 <i class="fas fa-star" style="color: #fbbf24;"></i>
@@ -1399,58 +1413,58 @@ function renderFavorites() {
             <div class="favorite-value">${formatCurrency(asset.value)}</div>
         </div>
     `).join('');
-}
+        }
 
-function getAssetExpenses(assetId) {
-    return expenses.filter(exp => exp.assetId === assetId);
-}
+        function getAssetExpenses(assetId) {
+            return expenses.filter(exp => exp.assetId === assetId);
+        }
 
-function renderAssets() {
-    const container = document.getElementById('assetsList');
-    
-    if (assets.length === 0) {
-        container.innerHTML = `
+        function renderAssets() {
+            const container = document.getElementById('assetsList');
+
+            if (assets.length === 0) {
+                container.innerHTML = `
             <div class="empty-state">
                 <i class="fas fa-wallet"></i>
                 <h5>Nenhum ativo cadastrado</h5>
                 <p>Clique no botão + para adicionar seu primeiro ativo</p>
             </div>
         `;
-        return;
-    }
+                return;
+            }
 
-    container.innerHTML = assets.map((asset, index) => {
-        const assetExpenses = getAssetExpenses(asset.id);
-        const expensesHtml = assetExpenses.length > 0 ? `
+            container.innerHTML = assets.map((asset, index) => {
+                const assetExpenses = getAssetExpenses(asset.id);
+                const totalExpenses = assetExpenses.reduce((sum, exp) => sum + exp.value, 0);
+                const totalPaid = assetExpenses.filter(e => e.paid).reduce((sum, exp) => sum + exp.value, 0);
+                const totalPending = assetExpenses.filter(e => !e.paid).reduce((sum, exp) => sum + exp.value, 0);
+
+                const expensesHtml = assetExpenses.length > 0 ? `
     ${assetExpenses.map(expense => `
-        <div class="expense-card ${expense.paid ? 'paid' : ''}">
-            <div class="expense-header">
-                <div class="expense-info">
-                    <div class="expense-description">${expense.description}</div>
-                    <div class="expense-asset-link">
-                        <i class="fas fa-link"></i> ${asset.name}
-                    </div>
-                </div>
-                <div class="expense-value">${formatCurrency(expense.value)}</div>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span class="expense-status ${expense.paid ? 'paid' : 'pending'}">
-                    ${expense.paid ? 'Quitada' : 'Pendente'}
-                </span>
-                ${!expense.paid ? `
-                    <button class="btn-pay" onclick="showPayExpenseModal('${expense.id}')">
-                        <i class="fas fa-check"></i> Quitar
-                    </button>
-                ` : ''}
-            </div>
-        </div>
+        <!-- código das despesas existente -->
     `).join('')}
+    
+    <div class="expenses-summary">
+        <div class="summary-item">
+            <span>Total de Despesas:</span>
+            <span class="total-value">${formatCurrency(totalExpenses)}</span>
+        </div>
+        <div class="summary-item paid">
+            <span>Quitadas:</span>
+            <span>${formatCurrency(totalPaid)}</span>
+        </div>
+        <div class="summary-item pending">
+            <span>Pendentes:</span>
+            <span>${formatCurrency(totalPending)}</span>
+        </div>
+    </div>
+    
     <button class="btn-clear-expenses" onclick="clearAssetExpenses('${asset.id}')">
         <i class="fas fa-broom"></i> Limpar Despesas (${assetExpenses.length})
     </button>
 ` : '';
 
-        return `
+                return `
             <div class="asset-card" draggable="true" data-index="${index}" data-id="${asset.id}" style="--asset-color: ${asset.color || '#4f46e5'}; border-left-color: ${asset.color || '#4f46e5'}">
                 <div class="drag-handle">
                     <i class="fas fa-grip-vertical"></i>
@@ -1481,136 +1495,136 @@ function renderAssets() {
                 </div>
             </div>
         `;
-    }).join('');
+            }).join('');
 
-    setupDragAndDrop();
-}
-
-function setupDragAndDrop() {
-    const cards = document.querySelectorAll('.asset-card');
-    let draggedElement = null;
-    let draggedIndex = null;
-
-    cards.forEach(card => {
-        card.addEventListener('dragstart', (e) => {
-            draggedElement = card;
-            draggedIndex = parseInt(card.dataset.index);
-            card.classList.add('dragging');
-            e.dataTransfer.effectAllowed = 'move';
-        });
-
-        card.addEventListener('dragend', (e) => {
-            card.classList.remove('dragging');
-        });
-
-        card.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            
-            const afterElement = getDragAfterElement(e.clientY);
-            const container = document.getElementById('assetsList');
-            
-            if (afterElement == null) {
-                container.appendChild(draggedElement);
-            } else {
-                container.insertBefore(draggedElement, afterElement);
-            }
-        });
-
-        card.addEventListener('drop', (e) => {
-            e.preventDefault();
-            const targetIndex = parseInt(card.dataset.index);
-            
-            if (draggedIndex !== targetIndex) {
-                const [removed] = assets.splice(draggedIndex, 1);
-                const newIndex = draggedIndex < targetIndex ? targetIndex - 1 : targetIndex;
-                assets.splice(newIndex, 0, removed);
-                
-                saveData();
-                renderAssets();
-                renderDistribution();
-            }
-        });
-    });
-}
-
-function getDragAfterElement(y) {
-    const cards = [...document.querySelectorAll('.asset-card:not(.dragging)')];
-    
-    return cards.reduce((closest, child) => {
-        const box = child.getBoundingClientRect();
-        const offset = y - box.top - box.height / 2;
-        
-        if (offset < 0 && offset > closest.offset) {
-            return { offset: offset, element: child };
-        } else {
-            return closest;
+            setupDragAndDrop();
         }
-    }, { offset: Number.NEGATIVE_INFINITY }).element;
-}
 
-function showAddAssetModal() {
-    editingAssetId = null;
-    const modal = new bootstrap.Modal(document.getElementById('addAssetModal'));
-    document.getElementById('assetModalTitle').textContent = 'Novo Ativo';
-    document.getElementById('assetSubmitBtn').textContent = 'Adicionar Ativo';
-    document.getElementById('assetForm').reset();
-    document.getElementById('editAssetId').value = '';
-    selectedColor = COLORS[0];
-    initColorPicker();
-    modal.show();
-}
+        function setupDragAndDrop() {
+            const cards = document.querySelectorAll('.asset-card');
+            let draggedElement = null;
+            let draggedIndex = null;
 
-function showEditAssetModal(assetId) {
-    editingAssetId = assetId;
-    const asset = assets.find(a => a.id === assetId);
-    
-    if (!asset) return;
-    
-    const modal = new bootstrap.Modal(document.getElementById('addAssetModal'));
-    document.getElementById('assetModalTitle').textContent = 'Editar Ativo';
-    document.getElementById('assetSubmitBtn').textContent = 'Salvar Alterações';
-    document.getElementById('editAssetId').value = assetId;
-    document.getElementById('assetName').value = asset.name;
-    document.getElementById('assetValue').value = asset.value;
-    document.getElementById('assetDesc').value = asset.description || '';
-    
-    selectedColor = asset.color || COLORS[0];
-    initColorPicker();
-    
-    modal.show();
-}
+            cards.forEach(card => {
+                card.addEventListener('dragstart', (e) => {
+                    draggedElement = card;
+                    draggedIndex = parseInt(card.dataset.index);
+                    card.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                });
 
-function showTransactionModal(assetId, type) {
-    const asset = assets.find(a => a.id === assetId);
-    const modal = new bootstrap.Modal(document.getElementById('transactionModal'));
-    
-    document.getElementById('transactionAssetId').value = assetId;
-    document.getElementById('transactionType').value = type;
-    document.getElementById('transactionTitle').textContent = 
-        type === 'add' ? `Adicionar valor - ${asset.name}` : `Remover valor - ${asset.name}`;
-    document.getElementById('transactionForm').reset();
-    
-    modal.show();
-}
+                card.addEventListener('dragend', (e) => {
+                    card.classList.remove('dragging');
+                });
 
-function showAddExpenseModal() {
-    const modal = new bootstrap.Modal(document.getElementById('addExpenseModal'));
-    const select = document.getElementById('expenseAsset');
-    
-    select.innerHTML = '<option value="">Selecione um ativo</option>' + 
-        assets.map(asset => `<option value="${asset.id}">${asset.name}</option>`).join('');
-    
-    document.getElementById('expenseForm').reset();
-    modal.show();
-}
+                card.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
 
-function showPayExpenseModal(expenseId) {
-    payingExpenseId = expenseId;
-    const expense = expenses.find(e => e.id === expenseId);
-    const asset = assets.find(a => a.id === expense.assetId);
-    
-    const summaryHtml = `
+                    const afterElement = getDragAfterElement(e.clientY);
+                    const container = document.getElementById('assetsList');
+
+                    if (afterElement == null) {
+                        container.appendChild(draggedElement);
+                    } else {
+                        container.insertBefore(draggedElement, afterElement);
+                    }
+                });
+
+                card.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const targetIndex = parseInt(card.dataset.index);
+
+                    if (draggedIndex !== targetIndex) {
+                        const [removed] = assets.splice(draggedIndex, 1);
+                        const newIndex = draggedIndex < targetIndex ? targetIndex - 1 : targetIndex;
+                        assets.splice(newIndex, 0, removed);
+
+                        saveData();
+                        renderAssets();
+                        renderDistribution();
+                    }
+                });
+            });
+        }
+
+        function getDragAfterElement(y) {
+            const cards = [...document.querySelectorAll('.asset-card:not(.dragging)')];
+
+            return cards.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        function showAddAssetModal() {
+            editingAssetId = null;
+            const modal = new bootstrap.Modal(document.getElementById('addAssetModal'));
+            document.getElementById('assetModalTitle').textContent = 'Novo Ativo';
+            document.getElementById('assetSubmitBtn').textContent = 'Adicionar Ativo';
+            document.getElementById('assetForm').reset();
+            document.getElementById('editAssetId').value = '';
+            selectedColor = COLORS[0];
+            initColorPicker();
+            modal.show();
+        }
+
+        function showEditAssetModal(assetId) {
+            editingAssetId = assetId;
+            const asset = assets.find(a => a.id === assetId);
+
+            if (!asset) return;
+
+            const modal = new bootstrap.Modal(document.getElementById('addAssetModal'));
+            document.getElementById('assetModalTitle').textContent = 'Editar Ativo';
+            document.getElementById('assetSubmitBtn').textContent = 'Salvar Alterações';
+            document.getElementById('editAssetId').value = assetId;
+            document.getElementById('assetName').value = asset.name;
+            document.getElementById('assetValue').value = asset.value;
+            document.getElementById('assetDesc').value = asset.description || '';
+
+            selectedColor = asset.color || COLORS[0];
+            initColorPicker();
+
+            modal.show();
+        }
+
+        function showTransactionModal(assetId, type) {
+            const asset = assets.find(a => a.id === assetId);
+            const modal = new bootstrap.Modal(document.getElementById('transactionModal'));
+
+            document.getElementById('transactionAssetId').value = assetId;
+            document.getElementById('transactionType').value = type;
+            document.getElementById('transactionTitle').textContent =
+                type === 'add' ? `Adicionar valor - ${asset.name}` : `Remover valor - ${asset.name}`;
+            document.getElementById('transactionForm').reset();
+
+            modal.show();
+        }
+
+        function showAddExpenseModal() {
+            const modal = new bootstrap.Modal(document.getElementById('addExpenseModal'));
+            const select = document.getElementById('expenseAsset');
+
+            select.innerHTML = '<option value="">Selecione um ativo</option>' +
+                assets.map(asset => `<option value="${asset.id}">${asset.name}</option>`).join('');
+
+            document.getElementById('expenseForm').reset();
+            modal.show();
+        }
+
+        function showPayExpenseModal(expenseId) {
+            payingExpenseId = expenseId;
+            const expense = expenses.find(e => e.id === expenseId);
+            const asset = assets.find(a => a.id === expense.assetId);
+
+            const summaryHtml = `
         <div class="expense-summary">
             <div class="summary-row">
                 <span class="summary-label">Despesa:</span>
@@ -1636,168 +1650,169 @@ function showPayExpenseModal(expenseId) {
             </div>
         </div>
     `;
-    
-    document.getElementById('paymentSummary').innerHTML = summaryHtml;
-    const modal = new bootstrap.Modal(document.getElementById('payExpenseModal'));
-    modal.show();
-}
 
-async function confirmPayment() {
-    const expense = expenses.find(e => e.id === payingExpenseId);
-    const asset = assets.find(a => a.id === expense.assetId);
-    
-    expense.paid = true;
-    expense.paidDate = new Date().toISOString();
-    asset.value -= expense.value;
-    
-    transactions.push({
-        id: Date.now().toString(),
-        assetId: asset.id,
-        type: 'expense_payment',
-        value: expense.value,
-        description: `Pagamento: ${expense.description}`,
-        date: new Date().toISOString()
-    });
-    
-    await saveData();
-    renderAssets();
-    renderFavorites();
-    renderDistribution();
-    calculateStats();
-    
-    bootstrap.Modal.getInstance(document.getElementById('payExpenseModal')).hide();
-    payingExpenseId = null;
-}
-
-document.getElementById('assetForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const assetId = document.getElementById('editAssetId').value;
-    const assetData = {
-        name: document.getElementById('assetName').value,
-        value: parseFloat(document.getElementById('assetValue').value),
-        color: selectedColor,
-        description: document.getElementById('assetDesc').value
-    };
-
-    if (assetId) {
-        const assetIndex = assets.findIndex(a => a.id === assetId);
-        if (assetIndex !== -1) {
-            assets[assetIndex] = {
-                ...assets[assetIndex],
-                ...assetData
-            };
+            document.getElementById('paymentSummary').innerHTML = summaryHtml;
+            const modal = new bootstrap.Modal(document.getElementById('payExpenseModal'));
+            modal.show();
         }
-    } else {
-        const newAsset = {
-            id: Date.now().toString(),
-            ...assetData
-        };
-        assets.push(newAsset);
-    }
 
-    await saveData();
-    renderAssets();
-    renderFavorites();
-    renderDistribution();
-    calculateStats();
-    
-    bootstrap.Modal.getInstance(document.getElementById('addAssetModal')).hide();
-});
+        async function confirmPayment() {
+            const expense = expenses.find(e => e.id === payingExpenseId);
+            const asset = assets.find(a => a.id === expense.assetId);
 
-document.getElementById('transactionForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const assetId = document.getElementById('transactionAssetId').value;
-    const type = document.getElementById('transactionType').value;
-    const value = parseFloat(document.getElementById('transactionValue').value);
-    
-    const asset = assets.find(a => a.id === assetId);
-    
-    if (type === 'add') {
-        asset.value += value;
-    } else {
-        asset.value -= value;
-    }
+            expense.paid = true;
+            expense.paidDate = new Date().toISOString();
+            asset.value -= expense.value;
 
-    transactions.push({
-        id: Date.now().toString(),
-        assetId,
-        type,
-        value,
-        date: new Date().toISOString()
-    });
+            transactions.push({
+                id: Date.now().toString(),
+                assetId: asset.id,
+                type: 'expense_payment',
+                value: expense.value,
+                description: `Pagamento: ${expense.description}`,
+                date: new Date().toISOString()
+            });
 
-    await saveData();
-    renderAssets();
-    renderFavorites();
-    renderDistribution();
-    calculateStats();
-    
-    bootstrap.Modal.getInstance(document.getElementById('transactionModal')).hide();
-});
+            await saveData();
+            renderAssets();
+            renderFavorites();
+            renderDistribution();
+            calculateStats();
 
-document.getElementById('expenseForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const newExpense = {
-        id: Date.now().toString(),
-        description: document.getElementById('expenseDescription').value,
-        value: parseFloat(document.getElementById('expenseValue').value),
-        assetId: document.getElementById('expenseAsset').value,
-        paid: false,
-        createdDate: new Date().toISOString()
-    };
-    
-    expenses.push(newExpense);
-    
-    await saveData();
-    renderAssets();
-    
-    bootstrap.Modal.getInstance(document.getElementById('addExpenseModal')).hide();
-});
+            bootstrap.Modal.getInstance(document.getElementById('payExpenseModal')).hide();
+            payingExpenseId = null;
+        }
 
-async function deleteAsset(assetId) {
-    if (confirm('Tem certeza que deseja excluir este ativo?')) {
-        assets = assets.filter(a => a.id !== assetId);
-        transactions = transactions.filter(t => t.assetId !== assetId);
-        favorites = favorites.filter(id => id !== assetId);
-        expenses = expenses.filter(e => e.assetId !== assetId);
-        await saveData();
-        renderAssets();
-        renderFavorites();
-        renderDistribution();
-        calculateStats();
-    }
-}
+        document.getElementById('assetForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-function goToTodo() {
-    window.location.href = 'https://bryancode.github.io/Finance-Tracker/to-do.html'
-}
+            const assetId = document.getElementById('editAssetId').value;
+            const assetData = {
+                name: document.getElementById('assetName').value,
+                value: parseFloat(document.getElementById('assetValue').value),
+                color: selectedColor,
+                description: document.getElementById('assetDesc').value
+            };
 
-async function init() {
-    loadTheme();
-    
-    const savedUser = getUserSession();
-    let loggedIn = false;
-    
-    if (savedUser) {
-        loggedIn = await login(true);
-    } else {
-        loggedIn = await login(false);
-    }
-    
-    if (loggedIn) {
-        updateUserDisplay();
-        await loadData();
-        renderAssets();
-        renderFavorites();
-        renderDistribution();
-        calculateStats();
-    }
-}
+            if (assetId) {
+                const assetIndex = assets.findIndex(a => a.id === assetId);
+                if (assetIndex !== -1) {
+                    assets[assetIndex] = {
+                        ...assets[assetIndex],
+                        ...assetData
+                    };
+                }
+            } else {
+                const newAsset = {
+                    id: Date.now().toString(),
+                    ...assetData
+                };
+                assets.push(newAsset);
+            }
 
-init();
+            await saveData();
+            renderAssets();
+            renderFavorites();
+            renderDistribution();
+            calculateStats();
+
+            bootstrap.Modal.getInstance(document.getElementById('addAssetModal')).hide();
+        });
+
+        document.getElementById('transactionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const assetId = document.getElementById('transactionAssetId').value;
+            const type = document.getElementById('transactionType').value;
+            const value = parseFloat(document.getElementById('transactionValue').value);
+
+            const asset = assets.find(a => a.id === assetId);
+
+            if (type === 'add') {
+                asset.value += value;
+            } else {
+                asset.value -= value;
+            }
+
+            transactions.push({
+                id: Date.now().toString(),
+                assetId,
+                type,
+                value,
+                date: new Date().toISOString()
+            });
+
+            await saveData();
+            renderAssets();
+            renderFavorites();
+            renderDistribution();
+            calculateStats();
+
+            bootstrap.Modal.getInstance(document.getElementById('transactionModal')).hide();
+        });
+
+        document.getElementById('expenseForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const newExpense = {
+                id: Date.now().toString(),
+                description: document.getElementById('expenseDescription').value,
+                value: parseFloat(document.getElementById('expenseValue').value),
+                assetId: document.getElementById('expenseAsset').value,
+                paid: false,
+                createdDate: new Date().toISOString()
+            };
+
+            expenses.push(newExpense);
+
+            await saveData();
+            renderAssets();
+
+            bootstrap.Modal.getInstance(document.getElementById('addExpenseModal')).hide();
+        });
+
+        async function deleteAsset(assetId) {
+            if (confirm('Tem certeza que deseja excluir este ativo?')) {
+                assets = assets.filter(a => a.id !== assetId);
+                transactions = transactions.filter(t => t.assetId !== assetId);
+                favorites = favorites.filter(id => id !== assetId);
+                expenses = expenses.filter(e => e.assetId !== assetId);
+                await saveData();
+                renderAssets();
+                renderFavorites();
+                renderDistribution();
+                calculateStats();
+            }
+        }
+
+        function goToTodo() {
+            window.location.href = 'https://bryancode.github.io/Finance-Tracker/to-do.html'
+        }
+
+        async function init() {
+            loadTheme();
+
+            const savedUser = getUserSession();
+            let loggedIn = false;
+
+            if (savedUser) {
+                loggedIn = await login(true);
+            } else {
+                loggedIn = await login(false);
+            }
+
+            if (loggedIn) {
+                updateUserDisplay();
+                await loadData();
+                renderAssets();
+                renderFavorites();
+                renderDistribution();
+                calculateStats();
+            }
+        }
+
+        init();
     </script>
 </body>
+
 </html>
