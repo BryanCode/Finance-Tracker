@@ -1660,56 +1660,6 @@
             document.getElementById('profileHeight').value = profile.height || '';
         }
 
-        function renderDay(day) {
-            const container = document.getElementById(`content-${day}`);
-            const dayWorkouts = workouts[day];
-
-            if (!dayWorkouts || Object.keys(dayWorkouts).length === 0) {
-                container.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-dumbbell"></i>
-                <h5>Nenhum exercício cadastrado</h5>
-                <p>Clique no + para adicionar exercícios</p>
-            </div>
-        `;
-                return;
-            }
-
-            const exercisesHTML = Object.entries(dayWorkouts).map(([id, exercise]) => {
-                const isCompleted = completedExercises[day] && completedExercises[day][id];
-
-                return `
-        <div class="exercise-item ${isCompleted ? 'completed' : ''}">
-            <div class="exercise-checkbox-wrapper">
-                <div class="checkbox-container">
-                    <input type="checkbox" 
-                           class="exercise-checkbox" 
-                           id="check_${id}"
-                           ${isCompleted ? 'checked' : ''}
-                           onchange="toggleExerciseComplete('${day}', '${id}')">
-                    <label for="check_${id}" class="checkbox-custom">
-                        <i class="fas fa-check"></i>
-                    </label>
-                </div>
-                <div class="exercise-content">
-                    <div class="exercise-header">
-                        <div class="exercise-title">${exercise.name}</div>
-                        <div class="exercise-load">${exercise.load}</div>
-                    </div>
-                    ${exercise.description ? `<div class="exercise-desc">${exercise.description}</div>` : ''}
-                    <div class="exercise-actions">
-                        <button class="btn-action btn-delete" onclick="deleteExercise('${day}', '${id}')">
-                            <i class="fas fa-trash"></i> Excluir
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        `;
-            }).join('');
-
-            container.innerHTML = exercisesHTML;
-        }
 
         function renderAllDays() {
             const days = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'coringa'];
